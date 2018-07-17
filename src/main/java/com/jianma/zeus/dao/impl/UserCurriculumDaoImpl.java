@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.jianma.zeus.dao.UserCurriculumDao;
-import com.jianma.zeus.model.Comment;
 import com.jianma.zeus.model.UserCurriculum;
 
 @Repository
