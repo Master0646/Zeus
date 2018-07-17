@@ -26,6 +26,8 @@ public class UserCurriculum implements java.io.Serializable {
 	private Date insertAt;
 
 	private String curriculumName;
+	private String teacherName;
+	private String curriculumRemark;
 	
 	public UserCurriculum() {
 	}
@@ -99,6 +101,24 @@ public class UserCurriculum implements java.io.Serializable {
 
 	public void setCurriculumName(String curriculumName) {
 		this.curriculumName = curriculumName;
+	}
+
+	@Transient
+	public String getTeacherName() {
+		return teacherName;
+	}
+
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
+	}
+
+	@Transient
+	public String getCurriculumRemark() {
+		return curriculumRemark;
+	}
+
+	public void setCurriculumRemark(String curriculumRemark) {
+		this.curriculumRemark = curriculumRemark;
 	}
 
 	
