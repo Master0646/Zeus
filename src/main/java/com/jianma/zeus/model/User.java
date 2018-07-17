@@ -35,6 +35,7 @@ public class User implements java.io.Serializable {
 	private String address;
 	private byte valid;
 	private String slot;
+	private String headPortrait;
 	private Set<UserRole> userRoles = new HashSet<UserRole>(0);
 
 	public User() {
@@ -121,6 +122,15 @@ public class User implements java.io.Serializable {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+
+	@Column(name = "headPortrait", length = 60)
+	public String getHeadPortrait() {
+		return headPortrait;
+	}
+
+	public void setHeadPortrait(String headPortrait) {
+		this.headPortrait = headPortrait;
 	}
 
 	@Column(name = "mobile", length = 18)
