@@ -62,7 +62,7 @@ public class CurriculumController extends ZeusController {
 
 	@RequiresRoles(value = { "" })
 	@ResponseBody
-	@RequestMapping(value = "/deleteCurriculum/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/deleteCurriculum/{id}", method = RequestMethod.DELETE)
 	public ResultModel deleteCurriculum(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable int id) {
 		resultModel = new ResultModel();
