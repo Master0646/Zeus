@@ -1,5 +1,8 @@
 package com.jianma.zeus.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -15,13 +18,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PolicyConditions;
 import com.jianma.zeus.ZeusController;
+import com.jianma.zeus.model.PageModel;
+import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.util.ConfigInfo;
 
 
@@ -87,5 +94,76 @@ public class AliOSSController extends ZeusController {
             return null;
         }
         
+	}
+	
+	@RequestMapping(value = "/createDir", method = RequestMethod.POST)
+	public @ResponseBody  ResultModel createDir(HttpServletRequest request,HttpServletResponse response,
+			Locale locale, Model model,  @RequestParam String dirName) {
+		resultModel = new ResultModel();
+		String endpoint = configInfo.endpoint;
+        String accessId = configInfo.accessId;
+        String accessKey = configInfo.accessKey;
+        String bucket = configInfo.bucket;
+        
+        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        
+        String objectName = dirName+"/";
+        
+        boolean found = client.doesObjectExist(bucket, objectName);
+        if(!found){
+        	ObjectMetadata objectMeta = new ObjectMetadata();
+    		
+    		byte[] buffer = new byte[0];
+    		ByteArrayInputStream in = new ByteArrayInputStream(buffer);
+    		objectMeta.setContentLength(0);
+    		try {
+    			client.putObject(bucket, objectName, in, objectMeta);
+    			resultModel.setSuccess(true);
+    			resultModel.setResultCode(200);
+    		} 
+    		catch(Exception e){
+    			e.printStackTrace();
+    			resultModel.setSuccess(false);
+    			resultModel.setResultCode(500);
+    		}
+    		finally {
+    			try {
+    				in.close();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+    		}
+        }
+        
+        // 关闭OSSClient。
+        client.shutdown();
+        
+		return resultModel;
+	}
+	
+	@RequestMapping(value = "/deleteDir", method = RequestMethod.POST)
+	public @ResponseBody  ResultModel deleteDir(HttpServletRequest request,HttpServletResponse response,
+			Locale locale, Model model,  @RequestParam String dirName) {
+		resultModel = new ResultModel();
+		String endpoint = configInfo.endpoint;
+        String accessId = configInfo.accessId;
+        String accessKey = configInfo.accessKey;
+        String bucket = configInfo.bucket;
+        
+        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+        
+        String objectName = dirName+"/";
+        
+        boolean found = client.doesObjectExist(bucket, objectName);
+        if(found){
+        	client.deleteObject(bucket, objectName);
+        }
+        
+        // 关闭OSSClient。
+        client.shutdown();
+        
+        resultModel.setSuccess(true);
+		resultModel.setResultCode(200);
+		return resultModel;
 	}
 }
