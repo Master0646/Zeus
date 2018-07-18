@@ -3,14 +3,20 @@ package com.jianma.zeus.controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -21,8 +27,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.OSSException;
 import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.DeleteObjectsRequest;
+import com.aliyun.oss.model.DeleteObjectsResult;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PolicyConditions;
@@ -43,27 +53,15 @@ public class AliOSSController extends ZeusController {
 	@RequestMapping(value = "/uploadKey/{type}", method = RequestMethod.GET)
 	public @ResponseBody  Map<String, String> uploadKey(HttpServletRequest request,HttpServletResponse response,Locale locale, Model model, @PathVariable int type) {
 		
+		Subject subject = SecurityUtils.getSubject();
+		Object schoolCode = subject.getSession().getAttribute("schoolCode");
+		
 		String endpoint = configInfo.endpoint;
         String accessId = configInfo.accessId;
         String accessKey = configInfo.accessKey;
         String bucket = configInfo.bucket;
-        String dir = "";
-        if (type == 1){
-        	dir = "product/";
-        }
-        else if (type == 2){
-        	dir = "news/";
-        }
-        else if (type == 3){
-        	dir = "judges/";
-        }
-        else if (type == 4){
-        	dir = "others/";
-        }
-        else if (type == 5){
-        	dir = "attachment/";
-        }
-        
+        String dir = schoolCode + "/";
+                
         String host = "http://" + bucket + "." + endpoint;
         OSSClient client = new OSSClient(endpoint, accessId, accessKey);
         try { 	
@@ -164,6 +162,47 @@ public class AliOSSController extends ZeusController {
         
         resultModel.setSuccess(true);
 		resultModel.setResultCode(200);
+		return resultModel;
+	}
+	
+	@RequestMapping(value = "/batchDeleteFile", method = RequestMethod.POST)
+	public @ResponseBody  ResultModel batchDeleteFile(HttpServletRequest request,HttpServletResponse response,
+			Locale locale, Model model,  @RequestParam String dirNames) {
+		resultModel = new ResultModel();
+		String endpoint = configInfo.endpoint;
+        String accessId = configInfo.accessId;
+        String accessKey = configInfo.accessKey;
+        String bucket = configInfo.bucket;
+        
+        OSSClient client = new OSSClient(endpoint, accessId, accessKey);
+              
+        try {
+            
+        	List<String> keys = Arrays.stream(dirNames.split(",")).collect(Collectors.toList());
+        	
+            
+            DeleteObjectsResult deleteObjectsResult = client.deleteObjects(
+                    new DeleteObjectsRequest(bucket).withKeys(keys));
+            List<String> deletedObjects = deleteObjectsResult.getDeletedObjects();
+            for (String object : deletedObjects) {
+                System.out.println("\t" + object);
+            }
+            resultModel.setSuccess(true);
+    		resultModel.setResultCode(200);
+    		
+        } catch (OSSException oe) {
+            
+            resultModel.setSuccess(false);
+    		resultModel.setResultCode(500);
+        } catch (ClientException ce) {
+        	resultModel.setSuccess(false);
+     		resultModel.setResultCode(500);
+        } finally {
+           
+            client.shutdown();
+        }
+        
+       
 		return resultModel;
 	}
 }

@@ -168,13 +168,29 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public Optional<User> checkAuthc(String email) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " from User u where u.email = ? ";
+		String hql = " select u.id,u.email, u.nickname,u.realname,u.password, s.code from User u, School s where u.email = ? and u.school = s.id ";
 		Query query = session.createQuery(hql);
 		query.setParameter(0, email);
-		List<User> list = query.list();
+		
+		List list = query.list();
+		
 		if (list.size() > 0) {
-			Optional<User> user = Optional.ofNullable(list.get(0));
-			return user;
+			Object []o = (Object[])list.get(0);
+			int id = ((Number)o[0]).intValue();
+			String e_mail = (String)o[1];
+			String nickname = (String)o[2];
+            String realname = (String)o[3];
+            String password = (String)o[4];
+            String code = (String)o[5];
+            User user = new User();
+            user.setId(id);
+            user.setEmail(e_mail);
+            user.setNickname(nickname);
+            user.setRealname(realname);
+            user.setPassword(password);
+            user.setSchoolCode(code);
+			Optional<User> userObj = Optional.ofNullable(user);
+			return userObj;
 		} else {
 			return Optional.empty();
 		}

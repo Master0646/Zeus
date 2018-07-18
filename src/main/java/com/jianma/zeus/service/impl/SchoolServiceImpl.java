@@ -1,6 +1,7 @@
 package com.jianma.zeus.service.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +27,7 @@ public class SchoolServiceImpl implements SchoolService {
 	@Override
 	public int createSchool(School school) {
 		try{
+			school.setCode(UUID.randomUUID().toString().replace("-", "").toLowerCase());
 			schoolDaoImpl.createSchool(school);
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}

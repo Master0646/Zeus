@@ -22,6 +22,7 @@ public class School implements java.io.Serializable {
 	private String name;
 	private String province;
 	private String academy;
+	private String code;
 	private Date createAt;
 	private Date updateAt;
 
@@ -100,5 +101,15 @@ public class School implements java.io.Serializable {
 	public void setUpdateAt(Date updateAt) {
 		this.updateAt = updateAt;
 	}
+		
+	@Column(name = "code", nullable = false, length = 32)
+	public String getCode() {
+		return code;
+	}
 
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	
 }

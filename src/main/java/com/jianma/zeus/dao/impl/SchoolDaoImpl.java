@@ -29,7 +29,14 @@ public class SchoolDaoImpl implements SchoolDao {
 
 	@Override
 	public void updateSchool(School school) {
-		sessionFactory.getCurrentSession().update(school);
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " update from School s set s.name = ?, s.province = ?, s.academy = ? where s.id = ?";
+		Query query = session.createQuery(hql);
+		query.setParameter(0, school.getName());
+		query.setParameter(1, school.getProvince());
+		query.setParameter(2, school.getAcademy());
+		query.setParameter(3, school.getId());
+		query.executeUpdate();
 	}
 
 	@Override

@@ -38,6 +38,8 @@ public class User implements java.io.Serializable {
 	private String headPortrait;
 	private Set<UserRole> userRoles = new HashSet<UserRole>(0);
 
+	private String schoolCode;
+	
 	public User() {
 	}
 
@@ -200,5 +202,16 @@ public class User implements java.io.Serializable {
 	public String getCredentialsSalt() {
 		return email + slot;
 	}
+
+	@Transient
+	public String getSchoolCode() {
+		return schoolCode;
+	}
+
+	public void setSchoolCode(String schoolCode) {
+		this.schoolCode = schoolCode;
+	}
+	
+	
 
 }
