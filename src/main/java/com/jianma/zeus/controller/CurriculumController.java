@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.Curriculum;
+import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.service.CurriculumService;
+import com.jianma.zeus.util.ResponseCodeUtil;
 
 @Controller
 @RequestMapping(value = "/curriculum")
@@ -34,12 +36,13 @@ public class CurriculumController extends ZeusController {
 	public ResultModel createCurriculum(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody Curriculum curriculum) {
 		resultModel = new ResultModel();
-		try {
-
+		int result = curriculumServiceImpl.createCurriculum(curriculum);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
-		} catch (Exception e) {
+		}
+		else{
 			throw new ZeusException(500, "创建出错");
 		}
 	}
@@ -50,13 +53,14 @@ public class CurriculumController extends ZeusController {
 	public ResultModel updateCurriculum(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody Curriculum curriculum) {
 		resultModel = new ResultModel();
-		try {
-
+		int result = curriculumServiceImpl.updateCurriculum(curriculum);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
-		} catch (Exception e) {
-			throw new ZeusException(500, "创建出错");
+		}
+		else{
+			throw new ZeusException(500, "更新出错");
 		}
 	}
 
@@ -66,13 +70,14 @@ public class CurriculumController extends ZeusController {
 	public ResultModel deleteCurriculum(HttpServletRequest request, HttpServletResponse response,
 			@PathVariable int id) {
 		resultModel = new ResultModel();
-		try {
-
+		int result = curriculumServiceImpl.deleteCurriculum((long)id);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
-		} catch (Exception e) {
-			throw new ZeusException(500, "创建出错");
+		}
+		else{
+			throw new ZeusException(500, "删除出错");
 		}
 	}
 
@@ -83,28 +88,30 @@ public class CurriculumController extends ZeusController {
 			@RequestParam int offset, @RequestParam int limit) {
 		resultModel = new ResultModel();
 		try {
-
+			PageModel pageModel = curriculumServiceImpl.getCurriculumListByPage(limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		} catch (Exception e) {
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 
 	@RequiresRoles(value = { "" })
 	@ResponseBody
-	@RequestMapping(value = "/getCurriculumListByPage", method = RequestMethod.GET)
+	@RequestMapping(value = "/getCurriculumListByPageAndTeacher", method = RequestMethod.GET)
 	public ResultModel getCurriculumListByPageAndTeacher(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam int teacherId, @RequestParam int offset, @RequestParam int limit) {
 		resultModel = new ResultModel();
 		try {
-
+			PageModel pageModel = curriculumServiceImpl.getCurriculumListByPageAndTeacher(teacherId, limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		} catch (Exception e) {
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 

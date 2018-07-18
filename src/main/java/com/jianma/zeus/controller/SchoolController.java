@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ZeusException;
+import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.model.School;
 import com.jianma.zeus.service.SchoolService;
+import com.jianma.zeus.util.ResponseCodeUtil;
 
 @Controller
 @RequestMapping(value="/school")
@@ -35,13 +37,14 @@ public class SchoolController extends ZeusController {
 	@RequestMapping(value="/createSchool", method = RequestMethod.POST)
 	public ResultModel createSchool(HttpServletRequest request, HttpServletResponse response, @RequestBody School school){
 		resultModel = new ResultModel();
-		try{
-			
+		
+		int result = schoolServiceImpl.createSchool(school);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
+		else{
 			throw new ZeusException(500, "创建出错");
 		}
 	}
@@ -51,15 +54,16 @@ public class SchoolController extends ZeusController {
 	@RequestMapping(value="/updateSchool", method = RequestMethod.POST)
 	public ResultModel updateSchool(HttpServletRequest request, HttpServletResponse response, @RequestBody School school){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = schoolServiceImpl.updateSchool(school);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+		else{
+			throw new ZeusException(500, "更新出错");
 		}
+		
 	}
 
 	@RequiresRoles(value ={""})
@@ -67,14 +71,14 @@ public class SchoolController extends ZeusController {
 	@RequestMapping(value="/deleteSchool/{id}", method = RequestMethod.DELETE)
 	public ResultModel deleteSchool(HttpServletRequest request, HttpServletResponse response, @PathVariable int id){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = schoolServiceImpl.deleteSchool((long)id);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+		else{
+			throw new ZeusException(500, "删除出错");
 		}
 	}  
 
@@ -85,13 +89,14 @@ public class SchoolController extends ZeusController {
 	public ResultModel getSchoolByProvince(HttpServletRequest request, HttpServletResponse response, @RequestParam String province){
 		resultModel = new ResultModel();
 		try{
-			
+			List<School> list = schoolServiceImpl.getSchoolByProvince(province);
+			resultModel.setObject(list);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	} 
 	  
@@ -101,13 +106,14 @@ public class SchoolController extends ZeusController {
 	public ResultModel getAcademyBySchoolName(HttpServletRequest request, HttpServletResponse response, @RequestParam String schoolName){
 		resultModel = new ResultModel();
 		try{
-			
+			List<School> list = schoolServiceImpl.getAcademyBySchoolName(schoolName);
+			resultModel.setObject(list);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 

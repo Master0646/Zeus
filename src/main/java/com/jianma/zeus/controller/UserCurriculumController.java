@@ -1,7 +1,5 @@
 package com.jianma.zeus.controller;
 
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,7 +57,7 @@ public class UserCurriculumController extends ZeusController{
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "修改出错");
 		}
 	}
 	
@@ -74,7 +72,7 @@ public class UserCurriculumController extends ZeusController{
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "删除出错");
 		}
 	}
 
@@ -85,12 +83,14 @@ public class UserCurriculumController extends ZeusController{
 			@RequestParam int limit, @RequestParam int offset){
 		resultModel = new ResultModel();
 		try{
+			PageModel pageModel = userCurriculumServiceImpl.getCurriculumByPage(limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 	
@@ -101,12 +101,14 @@ public class UserCurriculumController extends ZeusController{
 			@RequestParam int userId, @RequestParam int limit, @RequestParam int offset){
 		resultModel = new ResultModel();
 		try{
+			PageModel pageModel = userCurriculumServiceImpl.getUserCurriculumByUserId(userId,limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}   
 

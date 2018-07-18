@@ -21,6 +21,7 @@ import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.model.Tag;
 import com.jianma.zeus.service.TagService;
+import com.jianma.zeus.util.ResponseCodeUtil;
 
 @Controller
 @RequestMapping(value="/tag")
@@ -35,13 +36,13 @@ public class TagController extends ZeusController {
 	@RequestMapping(value="/createTag", method = RequestMethod.POST)
 	public ResultModel createTag(HttpServletRequest request, HttpServletResponse response, @RequestBody Tag tag){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = tagServiceImpl.createTag(tag);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
+		else{
 			throw new ZeusException(500, "创建出错");
 		}
 	}
@@ -51,14 +52,14 @@ public class TagController extends ZeusController {
 	@RequestMapping(value="/updateTag", method = RequestMethod.POST)
 	public ResultModel updateTag(HttpServletRequest request, HttpServletResponse response, @RequestBody Tag tag){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = tagServiceImpl.updateTag(tag);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+		else{
+			throw new ZeusException(500, "修改出错");
 		}
 	}
 
@@ -67,14 +68,14 @@ public class TagController extends ZeusController {
 	@RequestMapping(value="/deleteTag/{id}", method = RequestMethod.DELETE)
 	public ResultModel deleteTag(HttpServletRequest request, HttpServletResponse response,  @PathVariable int id){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = tagServiceImpl.deleteTag((long)id);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+		else{
+			throw new ZeusException(500, "删除出错");
 		}
 	}
 
@@ -84,13 +85,14 @@ public class TagController extends ZeusController {
 	public ResultModel getTagByAssignment(HttpServletRequest request, HttpServletResponse response,  @RequestParam int assignmentId){
 		resultModel = new ResultModel();
 		try{
-			
+			List<Tag> list = tagServiceImpl.getTagByAssignment(assignmentId);
+			resultModel.setObject(list);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 

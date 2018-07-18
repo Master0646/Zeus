@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.Assignment;
+import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.service.AssignmentService;
+import com.jianma.zeus.util.ResponseCodeUtil;
 
 @Controller
 @RequestMapping(value="/assignment")
@@ -33,15 +35,17 @@ public class AssignmentController extends ZeusController {
 	@RequestMapping(value="/createAssignment", method = RequestMethod.POST)
 	public ResultModel createAssignment(HttpServletRequest request, HttpServletResponse response, @RequestBody Assignment assignment){
 		resultModel = new ResultModel();
-		try{
-			
+		
+		int result = assignmentServiceImpl.createAssignment(assignment);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
+		else{
 			throw new ZeusException(500, "创建出错");
 		}
+		
 	}
 	
 	@RequiresRoles(value ={""})
@@ -49,15 +53,16 @@ public class AssignmentController extends ZeusController {
 	@RequestMapping(value="/updateAssignment", method = RequestMethod.POST)
 	public ResultModel updateAssignment(HttpServletRequest request, HttpServletResponse response, @RequestBody Assignment assignment){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = assignmentServiceImpl.updateAssignment(assignment);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+		else{
+			throw new ZeusException(500, "修改出错");
 		}
+		
 	}
 	
 	@RequiresRoles(value ={""})
@@ -65,14 +70,14 @@ public class AssignmentController extends ZeusController {
 	@RequestMapping(value="/deleteAssignment/{id}", method = RequestMethod.GET)
 	public ResultModel deleteAssignment(HttpServletRequest request, HttpServletResponse response, @PathVariable int id){
 		resultModel = new ResultModel();
-		try{
-			
+		int result = assignmentServiceImpl.deleteAssignment((long)id);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
-		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+		else{
+			throw new ZeusException(500, "删除出错");
 		}
 	}
 	
@@ -82,13 +87,14 @@ public class AssignmentController extends ZeusController {
 	public ResultModel getAssignmentListByPage(HttpServletRequest request, HttpServletResponse response, @RequestParam int offset, @RequestParam int limit){
 		resultModel = new ResultModel();
 		try{
-			
+			PageModel pageModel = assignmentServiceImpl.getAssignmentListByPage(limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 
@@ -99,13 +105,14 @@ public class AssignmentController extends ZeusController {
 		@RequestParam int userId, @RequestParam int curriculumId, @RequestParam int offset, @RequestParam int limit){
 		resultModel = new ResultModel();
 		try{
-			
+			PageModel pageModel = assignmentServiceImpl.getAssignmentListByPageAndUserId(userId, curriculumId, limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 
@@ -116,13 +123,14 @@ public class AssignmentController extends ZeusController {
 		@RequestParam int curriculumId, @RequestParam int offset, @RequestParam int limit){
 		resultModel = new ResultModel();
 		try{
-			
+			PageModel pageModel = assignmentServiceImpl.getAssignmentListByPageAndCurriculumId(curriculumId, limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 	
@@ -133,13 +141,14 @@ public class AssignmentController extends ZeusController {
 		@RequestParam String tagName, @RequestParam int offset, @RequestParam int limit){
 		resultModel = new ResultModel();
 		try{
-			
+			PageModel pageModel = assignmentServiceImpl.getAssignmentListByTagName(tagName, limit, offset);
+			resultModel.setObject(pageModel);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
 		}
 		catch(Exception e){
-			throw new ZeusException(500, "创建出错");
+			throw new ZeusException(500, "获取数据出错");
 		}
 	}
 	
