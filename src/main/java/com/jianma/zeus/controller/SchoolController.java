@@ -9,14 +9,17 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jianma.zeus.ZeusController;
+import com.jianma.zeus.exception.ServerException;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
@@ -31,6 +34,30 @@ public class SchoolController extends ZeusController {
 	@Autowired
 	@Qualifier(value = "schoolServiceImpl")
 	private  SchoolService schoolServiceImpl;
+	
+	@RequestMapping(value = "/{page}")
+	public ModelAndView school(HttpServletRequest request, Model model, @PathVariable int page) {
+		try {
+			ModelAndView modelView = new ModelAndView();
+			modelView.setViewName("frontend/school");
+			modelView.addObject(null);
+			return modelView;
+		} catch (Exception e) {
+			throw new ServerException(400, "服务器内部出错了");
+		}
+	}
+	
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/schoolManage")
+	public String schoolManage(HttpServletRequest request, Model model) {
+		return "backend/schoolManage";
+	}
+
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/alterSchool")
+	public String alterSchool(HttpServletRequest request, Model model) {
+		return "backend/alterSchool";
+	}
 	
 	@RequiresRoles(value ={""})
 	@ResponseBody

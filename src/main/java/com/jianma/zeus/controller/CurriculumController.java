@@ -7,14 +7,17 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jianma.zeus.ZeusController;
+import com.jianma.zeus.exception.ServerException;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.Curriculum;
 import com.jianma.zeus.model.PageModel;
@@ -30,6 +33,31 @@ public class CurriculumController extends ZeusController {
 	@Qualifier(value = "curriculumServiceImpl")
 	private CurriculumService curriculumServiceImpl;
 
+	@RequestMapping(value = "/{page}")
+	public ModelAndView curriculum(HttpServletRequest request, Model model, @PathVariable int page) {
+		try {
+			ModelAndView modelView = new ModelAndView();
+			modelView.setViewName("frontend/curriculum");
+			modelView.addObject(null);
+			return modelView;
+		} catch (Exception e) {
+			throw new ServerException(400, "服务器内部出错了");
+		}
+
+	}
+	
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/curriculumManage")
+	public String curriculumManage(HttpServletRequest request, Model model) {
+		return "backend/curriculumManage";
+	}
+
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/alterCurriculum")
+	public String alterCurriculum(HttpServletRequest request, Model model) {
+		return "backend/alterCurriculum";
+	}
+	
 	@RequiresRoles(value = { "" })
 	@ResponseBody
 	@RequestMapping(value = "/createCurriculum", method = RequestMethod.POST)

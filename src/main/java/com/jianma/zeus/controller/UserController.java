@@ -10,14 +10,17 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jianma.zeus.ZeusController;
+import com.jianma.zeus.exception.ServerException;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
@@ -31,6 +34,19 @@ public class UserController extends ZeusController {
 	@Autowired
 	@Qualifier(value = "userServiceImpl")
 	private  UserService userServiceImpl;
+	
+	
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/userManage")
+	public String userManage(HttpServletRequest request, Model model) {
+		return "backend/userManage";
+	}
+
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/alterUser")
+	public String alterSchool(HttpServletRequest request, Model model) {
+		return "backend/alterUser";
+	}
 	
 	@RequiresRoles(value ={""})
 	@ResponseBody
