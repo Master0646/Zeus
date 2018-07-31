@@ -1,6 +1,7 @@
 package com.jianma.zeus.realm;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.jianma.zeus.model.User;
+import com.jianma.zeus.model.UserRole;
 import com.jianma.zeus.service.UserService;
 
 
@@ -64,6 +66,13 @@ public class UserRealm extends AuthorizingRealm{
         	subject.getSession().setAttribute("email", username);
         	subject.getSession().setAttribute("realname", user.get().getRealname());
         	subject.getSession().setAttribute("schoolCode", user.get().getSchoolCode());
+        	Set<UserRole> setUserRole = user.get().getUserRoles();
+        	StringBuilder sBuild = new StringBuilder();
+        	for (UserRole userRole : setUserRole){
+        		sBuild.append(userRole.getRole().getId());
+        		sBuild.append(",");
+        	}
+        	subject.getSession().setAttribute("roleIds", sBuild.toString());
             return authenticationInfo;
             
         }
