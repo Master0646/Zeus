@@ -27,7 +27,7 @@ import com.jianma.zeus.service.RoleMenuService;
 import com.jianma.zeus.util.ResponseCodeUtil;
 
 @Controller
-@RequestMapping(value = "/roleRoleMenu")
+@RequestMapping(value = "/roleMenu")
 public class RoleMenuController extends ZeusController{
 
 	@Autowired
