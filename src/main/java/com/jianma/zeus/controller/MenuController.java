@@ -34,13 +34,13 @@ public class MenuController extends ZeusController{
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/menuManage")
 	public String menuManage(HttpServletRequest request, Model model) {
-		return "backend/menuManage";
+		return "admin/menuManage";
 	}
 
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/alterMenu")
 	public String alterMenu(HttpServletRequest request, Model model) {
-		return "backend/alterMenu";
+		return "admin/alterMenu";
 	}
 	
 	@RequiresRoles(value = { "" })

@@ -39,13 +39,13 @@ public class UserController extends ZeusController {
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/userManage")
 	public String userManage(HttpServletRequest request, Model model) {
-		return "backend/userManage";
+		return "admin/userManage";
 	}
 
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/alterUser")
 	public String alterSchool(HttpServletRequest request, Model model) {
-		return "backend/alterUser";
+		return "admin/alterUser";
 	}
 	
 	@RequiresRoles(value ={""})

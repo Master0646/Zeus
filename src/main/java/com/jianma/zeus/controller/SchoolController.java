@@ -50,13 +50,13 @@ public class SchoolController extends ZeusController {
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/schoolManage")
 	public String schoolManage(HttpServletRequest request, Model model) {
-		return "backend/schoolManage";
+		return "admin/schoolManage";
 	}
 
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/alterSchool")
 	public String alterSchool(HttpServletRequest request, Model model) {
-		return "backend/alterSchool";
+		return "admin/alterSchool";
 	}
 	
 	@RequiresRoles(value ={""})

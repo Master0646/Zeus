@@ -19,7 +19,7 @@ import com.jianma.zeus.util.ResponseCodeUtil;
 public class AliOSSServiceImpl implements AliOSSService {
 
 	@Autowired
-	@Qualifier(value = "assignmentDaoImpl")
+	@Qualifier(value = "aliOSSDaoImpl")
 	private AliOSSDao aliOSSDaoImpl;
 	
 	@Override

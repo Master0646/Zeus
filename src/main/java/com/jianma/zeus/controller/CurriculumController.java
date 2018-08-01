@@ -32,30 +32,17 @@ public class CurriculumController extends ZeusController {
 	@Autowired
 	@Qualifier(value = "curriculumServiceImpl")
 	private CurriculumService curriculumServiceImpl;
-
-	@RequestMapping(value = "/{page}")
-	public ModelAndView curriculum(HttpServletRequest request, Model model, @PathVariable int page) {
-		try {
-			ModelAndView modelView = new ModelAndView();
-			modelView.setViewName("frontend/curriculum");
-			modelView.addObject(null);
-			return modelView;
-		} catch (Exception e) {
-			throw new ServerException(400, "服务器内部出错了");
-		}
-
-	}
-	
+		
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/curriculumManage")
 	public String curriculumManage(HttpServletRequest request, Model model) {
-		return "backend/curriculumManage";
+		return "admin/curriculumManage";
 	}
 
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/alterCurriculum")
 	public String alterCurriculum(HttpServletRequest request, Model model) {
-		return "backend/alterCurriculum";
+		return "admin/alterCurriculum";
 	}
 	
 	@RequiresRoles(value = { "" })

@@ -31,19 +31,19 @@ import com.jianma.zeus.util.ResponseCodeUtil;
 public class RoleMenuController extends ZeusController{
 
 	@Autowired
-	@Qualifier(value = "roleRoleMenuServiceImpl")
+	@Qualifier(value = "roleMenuServiceImpl")
 	private RoleMenuService roleMenuServiceImpl;
 	
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/roleMenuManage")
 	public String roleMenuManage(HttpServletRequest request, Model model) {
-		return "backend/roleMenuManage";
+		return "admin/roleMenuManage";
 	}
 
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/alterRoleMenu")
 	public String alterRoleMenu(HttpServletRequest request, Model model) {
-		return "backend/alterRoleMenu";
+		return "admin/alterRoleMenu";
 	}
 	
 	@RequiresRoles(value = { "" })
