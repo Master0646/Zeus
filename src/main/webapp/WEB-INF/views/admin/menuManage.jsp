@@ -7,9 +7,9 @@
 <head>
 	<%@ include file="../head.jsp"%>
 
+	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/lib/iview.css">
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
-	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	
 	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>

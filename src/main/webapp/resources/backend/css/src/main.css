@@ -6,6 +6,7 @@ html{
     width:100%;
 }
 body{
+	font-size:12px;
     margin: 0px;
     padding:0px;
     height: 100%;
@@ -182,10 +183,10 @@ label.error{
     color: #56abff;
 }
 
-
 .tableSearchContainer{
     position: absolute;
     top: 0;
     right:0;
     width:50%;
 }
+

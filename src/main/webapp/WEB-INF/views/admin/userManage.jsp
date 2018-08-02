@@ -1,20 +1,21 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
 <html>
 <head>
 	<%@ include file="../head.jsp"%>
-
+	
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/lib/iview.css">
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	
 	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>
-    <script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
-    <script src="resources/backend/js/lib/iview.min.js" charset="utf-8"></script>
+	<script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
+	<script src="resources/backend/js/lib/iview.min.js" charset="utf-8"></script>
 	<script src="resources/backend/js/src/config.js"></script>
 </head>
 <body>
@@ -23,21 +24,22 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-		<div class="userManage" style="margin:20px 20px;">
-	        <i-col span="24">用户管理</i-col>
-	        <modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
-			      <p style="color:#ed3f14;text-align:center">
-			          <Icon type="information-circled"></Icon>
-			          <span style="font-size: 15px;">确定删除用户:{{userTitle}}？</span>
-			      </p>
-			  </modal>
-	        <i-button type="primary" @click="createUser"><Icon type="plus"></Icon> 新建</i-button>
-	        <i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
-	    </div>
-    </div>
+		<div class="userManage" style="margin: 20px 20px;">
+			<i-col span="24">用户管理</i-col>
+			<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
+			<p style="color: #ed3f14; text-align: center">
+				<Icon type="information-circled"></Icon>
+				<span style="font-size: 15px;">确定删除用户:{{userTitle}}？</span>
+			</p>
+			</modal>
+			<i-button type="primary" @click="createUser">
+			<Icon type="plus"></Icon> 新建</i-button>
+			<i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
+		</div>
+	</div>
 
-    <script>
-		var pageName = "news";
+	<script>
+		var pageName = "user";
         var userManage = new Vue({
             el: '.userManage',
             data: function(){
