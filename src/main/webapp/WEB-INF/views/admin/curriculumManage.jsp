@@ -24,7 +24,7 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-		<div class="curriculumManage" style="margin: 20px 20px;">
+		<div class="curriculumManage" style="margin: 20px 20px;" v-cloak>
 			<i-col span="24">课程管理</i-col>
 			<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 			<p style="color: #ed3f14; text-align: center">

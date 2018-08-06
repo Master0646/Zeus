@@ -23,7 +23,7 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-	    <div class="assignmentManage" style="margin:20px 20px;">
+	    <div class="assignmentManage" style="margin:20px 20px;" v-cloak>
 	        <i-col span="24">作业管理</i-col>
 	        <modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 		      	<p style="color:#ed3f14;text-align:center">
