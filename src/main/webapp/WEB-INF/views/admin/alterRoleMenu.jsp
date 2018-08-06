@@ -23,10 +23,12 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-		<div class="alterRoleMenu">
-	         <i-col span="24">新建/修改菜单</i-col><br/><br/>
+		<div class="alterRoleMenu" style="margin: 20px 20px;" v-cloak>
+	        <breadcrumb>
+		        <breadcrumb-item>新建/修改菜单</breadcrumb-item>
+		    </breadcrumb><br />
 	         <div>
-			    <i-form :model="dataSourse" :label-width="180" style="width:80%;" v-cloak>
+			    <i-form :model="dataSourse" :label-width="180" style="width:80%;">
 			                 <form-item label="角色">
 			                     <i-select v-model="dataSourse.role" style="width:200px" @on-change="selectChange">
 			                         <i-option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</i-option>

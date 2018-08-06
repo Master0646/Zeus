@@ -24,7 +24,10 @@
 	</div>
 	<div class="right">
 	    <div class="assignmentManage" style="margin:20px 20px;" v-cloak>
-	        <i-col span="24">作业管理</i-col>
+	        <breadcrumb>
+		        <breadcrumb-item to="curriculum/curriculumManage">课程管理</breadcrumb-item>
+		        <breadcrumb-item>作业管理</breadcrumb-item>
+		    </breadcrumb><br />
 	        <modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 		      	<p style="color:#ed3f14;text-align:center">
 		          	<Icon type="information-circled"></Icon>
@@ -48,37 +51,46 @@
                         { title: 'ID',key: 'id', align: 'center'},
                         { title: '作业名称',key: 'name', align: 'center'},
                         { title: '所属课程',key: 'curriculumId', align: 'center'},
-                        { title: '操作',key: 'opt', align: 'center',
-                    	   render: (h, params) => {
-                               return h('div', [
-                                   h('Button', {
-                                       props: {
-                                           type: 'primary',
-                                           size: 'small'
-                                       },
-                                       style: {
-                                           marginRight: '5px'
-                                       },
-                                       on: {
-                                           click: () => {
-                                               this.change(params.index)
-                                           }
-                                       }
-                                   }, '修改'),
-                                   h('Button', {
-                                       props: {
-                                           type: 'error',
-                                           size: 'small'
-                                       },
-                                       on: {
-                                           click: () => {
-                                               this.remove(params.index)
-                                           }
-                                       }
-                                   }, '删除')
-                               ]);
-                           }
-                       }
+                        { title: '评论',key: 'opt', align: 'center',
+                        	render: (h, params) => {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.chickComment(params.index)
+                                            }
+                                        }
+                                    }, '查看')
+                                ]);
+                            }
+                        },
+                        { title: '打分',key: 'opt', align: 'center',
+                        	render: (h, params) => {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.grade(params.index)
+                                            }
+                                        }
+                                    }, '查看')
+                                ]);
+                            }
+                        }
                     ],
                     dataList:[
                         {id:"1",name:"作业1",curriculumId:"1"},
@@ -95,11 +107,12 @@
                     console.log("!!!!!!!!!!!!!!");
                     window.location.href="assignment/alterAssignment";
                 },
-                change:function(index){
-                    console.log("changechange:",index);
+                chickComment:function(index){
+                    console.log("chickComment:",index);
+                    window.location.href="comment/commentManage";
                 },
-                remove:function(index) {
-                    console.log("removeremove:",index);
+                grade:function(index){
+                    console.log(" score:",index);
                 }
             }
         })

@@ -25,7 +25,9 @@
 	</div>
 	<div class="right">
 		<div class="userManage" style="margin: 20px 20px;" v-cloak>
-			<i-col span="24">用户管理</i-col>
+	      	<breadcrumb>
+		        <breadcrumb-item>用户管理</breadcrumb-item>
+		    </breadcrumb><br />
 			<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 			<p style="color: #ed3f14; text-align: center">
 				<Icon type="information-circled"></Icon>
@@ -50,6 +52,7 @@
                     columns:[
                         { title: 'ID',key: 'id', align: 'center'},
                         { title: '姓名',key: 'name', align: 'center'},
+                        { title: '所属角色',key: 'roleId', align: 'center'},
                         { title: '操作',key: 'opt', align: 'center',
                     	   render: (h, params) => {
                                return h('div', [
@@ -83,9 +86,9 @@
                        }
                     ],
                     dataList:[
-                        {id:"1",name:"用户1"},
-                        {id:"2",name:"用户2"},
-                        {id:"3",name:"用户3"}
+                        {id:"1",name:"用户1",roleId:"老师"},
+                        {id:"2",name:"用户2",roleId:"院校管理员"},
+                        {id:"3",name:"用户3",roleId:"系部管理员"}
                     ]
                 }
             },

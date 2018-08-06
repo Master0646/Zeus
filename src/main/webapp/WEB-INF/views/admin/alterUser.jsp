@@ -23,10 +23,12 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-		<div class="alterUser">
-	     	<i-col span="24">新建/修改用户</i-col><br/><br/>
+		<div class="alterUser" style="margin: 20px 20px;" v-cloak>
+			<breadcrumb>
+		        <breadcrumb-item>新建/修改用户</breadcrumb-item>
+		    </breadcrumb><br />
 	     	<div>
-				<i-form :model="dataSourse" :label-width="180" style="width:80%;" v-cloak>
+				<i-form :model="dataSourse" :label-width="180" style="width:80%;">
 		            <form-item label="权限">
 		                <i-select v-model="dataSourse.groupModel" style="width:200px" @on-change="groupCheck">
 		     				<i-option v-for="Groupitem in GroupList" :value="Groupitem.value" :key="Groupitem.value" >{{ Groupitem.label }}</i-option>

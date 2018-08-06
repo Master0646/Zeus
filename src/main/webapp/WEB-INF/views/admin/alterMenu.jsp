@@ -11,11 +11,6 @@
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	
-	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
-	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>
-    <script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
-    <script src="resources/backend/js/lib/iview.min.js" charset="utf-8"></script>
-	<script src="resources/backend/js/src/config.js"></script>
 </head>
 <body>
 	<%@ include file="header.jsp"%>
@@ -23,15 +18,17 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-	    <div class="alterMenu">
-	        <i-col span="24">新建/修改菜单</i-col><br/><br/>
+	    <div class="alterMenu" style="margin: 20px 20px;" v-cloak>
+	        <breadcrumb>
+		        <breadcrumb-item>新建/修改菜单</breadcrumb-item>
+		    </breadcrumb><br />
 	        <div>
-			   <i-form :model="dataSourse" :label-width="180" style="width:80%;" v-cloak>
+			   <i-form :model="dataSourse" :label-width="180" style="width:80%;">
 	                <form-item label="菜单名称">
-			           <i-input v-model="dataSourse.name" placeholder="请输入课程名"></i-input>
+			           <i-input v-model="dataSourse.name" clearable="true" placeholder="请输入课程名"></i-input>
 			       </form-item>
 	                <form-item label="链接">
-			           <i-input v-model="dataSourse.url" placeholder="请输入菜单对应链接"></i-input>
+			           <i-input type="url" v-model="dataSourse.url" clearable="true" placeholder="请输入菜单对应链接"></i-input>
 			        </form-item>
 			        <form-item>
 			        	<i-button type="primary" v-on:click="submit" long>确定</i-button>
@@ -40,7 +37,12 @@
 			</div>
 	     </div>
      </div>
-     <script>
+     <script src="resources/js/lib/jquery-1.10.2.min.js"></script>
+	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>
+    <script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
+    <script src="resources/backend/js/lib/iview.min.js" charset="utf-8"></script>
+	<script src="resources/backend/js/src/config.js"></script>
+	<script type="text/javascript">
      	var pageName = "menu";
         var alterMenu = new Vue({
             el:".alterMenu",
@@ -56,7 +58,8 @@
             },
             methods:{
                 submit:function(){
-                    console.log("submit");
+                    var that = this;
+                    var url = config.ajaxUrls.createMenu;
                 }
             }
         })

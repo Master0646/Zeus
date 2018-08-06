@@ -24,7 +24,9 @@
 	</div>
 	<div class="right">
 		<div class="menuManage" style="margin:20px 20px;" v-cloak>
-	      	<i-col span="24">菜单管理</i-col>
+	      	<breadcrumb>
+		        <breadcrumb-item>菜单管理</breadcrumb-item>
+		    </breadcrumb><br />
 	      	<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 			    <p style="color:#ed3f14;text-align:center">
 			        <Icon type="information-circled"></Icon>

@@ -23,10 +23,12 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-	    <div class="alterAssignment">
-		     <i-col span="24">新建/修改作业</i-col><br/><br/>
+	    <div class="alterAssignment" style="margin: 20px 20px;" v-cloak>
+		     <breadcrumb>
+		        <breadcrumb-item>新建/修改作业</breadcrumb-item>
+		     </breadcrumb><br />
 		     <div>
-				<i-form :model="dataSourse" :label-width="180" style="width:80%;" v-cloak>
+				<i-form :model="dataSourse" :label-width="180" style="width:80%;">
 			        <form-item label="作业名称">
 			       		<i-input v-model="dataSourse.name" placeholder="请输入作业名"></i-input>
 			   		</form-item>

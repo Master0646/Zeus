@@ -7,6 +7,7 @@ import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,12 @@ public class CommentController extends ZeusController {
 	@Autowired
 	@Qualifier(value = "commentServiceImpl")
 	private  CommentService commentServiceImpl;
+	
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/commentManage")
+	public String commentManage(HttpServletRequest request, Model model) {
+		return "admin/commentManage";
+	}
 	
 	@RequiresRoles(value ={""})
 	@ResponseBody

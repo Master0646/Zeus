@@ -25,7 +25,9 @@
 	</div>
 	<div class="right">
 		<div class="curriculumManage" style="margin: 20px 20px;" v-cloak>
-			<i-col span="24">课程管理</i-col>
+			<breadcrumb>
+		        <breadcrumb-item>课程管理</breadcrumb-item>
+		    </breadcrumb><br />
 			<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 			<p style="color: #ed3f14; text-align: center">
 				<Icon type="information-circled"></Icon>
@@ -64,6 +66,26 @@
                                         on: {
                                             click: () => {
                                                 this.chick(params.index)
+                                            }
+                                        }
+                                    }, '查看')
+                                ]);
+                            }
+                        },
+                        { title: '作业提交情况',key: 'opt', align: 'center',
+                        	render: (h, params) => {
+                                return h('div', [
+                                    h('Button', {
+                                        props: {
+                                            type: 'primary',
+                                            size: 'small'
+                                        },
+                                        style: {
+                                            marginRight: '5px'
+                                        },
+                                        on: {
+                                            click: () => {
+                                                this.chickSubmission(params.index)
                                             }
                                         }
                                     }, '查看')
@@ -111,7 +133,7 @@
             },
             methods: {
                 ok: function () {
-
+					
                 },
                 //新建课程
                 createCurriculum:function(){
@@ -119,6 +141,9 @@
                 },
                 chick:function(index){
                 	window.location.href="assignment/assignmentManage";
+                },
+                chickSubmission:function(index){
+                	window.location.href="assignment/assignmentSubmissionManage";
                 },
                 change:function(index){
                     console.log("changechange:",index);

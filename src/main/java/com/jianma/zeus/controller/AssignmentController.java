@@ -39,6 +39,12 @@ public class AssignmentController extends ZeusController {
 	public String assignmentManage(HttpServletRequest request, Model model) {
 		return "admin/assignmentManage";
 	}
+	
+	@RequiresRoles(value = { "管理员" })
+	@RequestMapping(value = "/assignmentSubmissionManage")
+	public String assignmentSubmissionManage(HttpServletRequest request, Model model) {
+		return "admin/assignmentSubmissionManage";
+	}
 
 	@RequiresRoles(value = { "管理员" })
 	@RequestMapping(value = "/alterAssignment")

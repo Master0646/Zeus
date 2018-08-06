@@ -24,12 +24,12 @@
 		<%@ include file="menu.jsp"%>
 	</div>
 	<div class="right">
-		<div class="schoolCOU">
-			<i-col span="24">新建/修改院校</i-col>
-			<br />
-			<br />
+		<div class="schoolCOU" style="margin: 20px 20px;" v-cloak>
+			<breadcrumb>
+		        <breadcrumb-item>新建/修改院校</breadcrumb-item>
+		    </breadcrumb><br />
 			<div>
-				<i-form :model="dataSourse" :label-width="180" style="width:80%;" v-cloak> 
+				<i-form :model="dataSourse" :label-width="180" style="width:80%;"> 
 					<form-item label="省份"> 
 						<i-input v-model="dataSourse.province" placeholder="请输入省份"></i-input> 
 					</form-item> 
