@@ -15,4 +15,10 @@ public interface SchoolDao {
     public List<School> getSchoolByProvince(String province);
     
     public List<School> getAcademyBySchoolName(String schoolName);
+    
+    public List<School> getSchoolByPage(int limit,int offset);
+    
+    public int countSchool();
+    
+    public School loadSchoolById(int id);
 }

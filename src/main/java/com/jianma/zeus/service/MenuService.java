@@ -13,4 +13,6 @@ public interface MenuService {
     public int deleteMenu(Long menuId);
     
     public List<Menu> getMenuList();
+    
+    public Menu loadMenuById(int id);
 }

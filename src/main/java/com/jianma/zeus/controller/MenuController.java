@@ -1,5 +1,6 @@
 package com.jianma.zeus.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ZeusException;
@@ -38,9 +40,15 @@ public class MenuController extends ZeusController{
 	}
 
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/alterMenu")
-	public String alterMenu(HttpServletRequest request, Model model) {
-		return "admin/alterMenu";
+	@RequestMapping(value = "/alterMenu/{id}")
+	public ModelAndView alterMenu(HttpServletRequest request, Model model,@PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		if (id > 0){
+			Menu menu = menuServiceImpl.loadMenuById(id);
+			modelView.addObject("menu", menu);
+		}
+		modelView.setViewName("admin/alterMenu");
+		return modelView;
 	}
 	
 	@RequiresRoles(value = { "" })

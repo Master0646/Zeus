@@ -37,7 +37,7 @@ public class MenuDaoImpl implements MenuDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " delete Menu m  where m.id = ? ";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, menuId);
+		query.setParameter(0, menuId.intValue());
 		query.executeUpdate();
 	}
 
@@ -47,6 +47,12 @@ public class MenuDaoImpl implements MenuDao {
 		String hql = " from Menu m order by updateAt desc";
 		Query query = session.createQuery(hql);
 		return query.list();
+	}
+
+	@Override
+	public Menu loadMenuById(int id) {
+		Session session = sessionFactory.getCurrentSession();
+		return (Menu)session.get(Menu.class, id);
 	}
 
 }

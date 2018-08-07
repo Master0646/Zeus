@@ -87,4 +87,9 @@ public class AssignmentServiceImpl implements AssignmentService {
 		return pageModel;
 	}
 
+	@Override
+	public Assignment loadAssignmentById(int id) {
+		return assignmentDaoImpl.loadAssignmentById(id);
+	}
+
 }

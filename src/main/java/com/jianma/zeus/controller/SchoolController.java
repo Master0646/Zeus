@@ -54,9 +54,15 @@ public class SchoolController extends ZeusController {
 	}
 
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/alterSchool")
-	public String alterSchool(HttpServletRequest request, Model model) {
-		return "admin/alterSchool";
+	@RequestMapping(value = "/alterSchool/{id}")
+	public ModelAndView alterSchool(HttpServletRequest request, Model model,@PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		modelView.setViewName("admin/alterSchool");
+		if (id > 0){
+			School school = schoolServiceImpl.loadSchoolById(id);
+			modelView.addObject("school",school);
+		}
+		return modelView;
 	}
 	
 	@RequiresRoles(value ={""})
@@ -144,4 +150,21 @@ public class SchoolController extends ZeusController {
 		}
 	}
 
+	@RequiresRoles(value ={""})
+	@ResponseBody
+	@RequestMapping(value="/getSchoolByPage", method = RequestMethod.GET)
+	public ResultModel getSchoolByPage(HttpServletRequest request, HttpServletResponse response, @RequestParam int limit,
+			@RequestParam int offset){
+		resultModel = new ResultModel();
+		try{
+			PageModel pModel = schoolServiceImpl.getSchoolByPage(limit, offset);
+			resultModel.setObject(pModel);
+			resultModel.setResultCode(200);
+			resultModel.setSuccess(true);
+			return resultModel;
+		}
+		catch(Exception e){
+			throw new ZeusException(500, "获取数据出错");
+		}
+	}
 }

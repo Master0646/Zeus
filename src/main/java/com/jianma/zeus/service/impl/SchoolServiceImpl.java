@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jianma.zeus.dao.SchoolDao;
+import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.School;
 import com.jianma.zeus.service.SchoolService;
 import com.jianma.zeus.util.ResponseCodeUtil;
@@ -54,6 +55,7 @@ public class SchoolServiceImpl implements SchoolService {
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			return ResponseCodeUtil.DB_OPERATION_FAILURE;
 		}
 	}
@@ -66,6 +68,19 @@ public class SchoolServiceImpl implements SchoolService {
 	@Override
 	public List<School> getAcademyBySchoolName(String schoolName) {
 		return schoolDaoImpl.getAcademyBySchoolName(schoolName);
+	}
+
+	@Override
+	public PageModel getSchoolByPage(int limit, int offset) {
+		PageModel pModel = new PageModel();
+		pModel.setCount(schoolDaoImpl.countSchool());
+		pModel.setList(schoolDaoImpl.getSchoolByPage(limit, offset));
+		return pModel;
+	}
+
+	@Override
+	public School loadSchoolById(int id) {
+		return schoolDaoImpl.loadSchoolById(id);
 	}
 
 }

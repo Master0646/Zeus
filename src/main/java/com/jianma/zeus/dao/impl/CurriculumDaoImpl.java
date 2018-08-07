@@ -37,7 +37,7 @@ public class CurriculumDaoImpl implements CurriculumDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " update Curriculum c set c.valid = 0 where c.id = ?";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, curriculumId);
+		query.setParameter(0, curriculumId.intValue());
 		query.executeUpdate();
 	}
 
@@ -77,6 +77,12 @@ public class CurriculumDaoImpl implements CurriculumDao {
 		Query query = session.createQuery(hql); 
 		query.setParameter(0, teacherId);
         return (int)((Long)query.uniqueResult()).longValue();
+	}
+
+	@Override
+	public Curriculum loadCurriculumById(int id) {
+		Session session = sessionFactory.getCurrentSession();
+		return (Curriculum)session.get(Curriculum.class, id);
 	}
 
 }

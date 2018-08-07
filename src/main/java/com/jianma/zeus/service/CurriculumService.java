@@ -15,4 +15,5 @@ public interface CurriculumService {
     
     public PageModel getCurriculumListByPageAndTeacher(int teacherId, int limit, int offset);
     
+    public Curriculum loadCurriculumById(int id);
 }

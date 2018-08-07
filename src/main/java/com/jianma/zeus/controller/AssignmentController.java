@@ -20,6 +20,7 @@ import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ServerException;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.Assignment;
+import com.jianma.zeus.model.Curriculum;
 import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.service.AssignmentService;
@@ -47,9 +48,15 @@ public class AssignmentController extends ZeusController {
 	}
 
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/alterAssignment")
-	public String alterAssignment(HttpServletRequest request, Model model) {
-		return "admin/alterAssignment";
+	@RequestMapping(value = "/alterAssignment/{id}")
+	public ModelAndView alterAssignment(HttpServletRequest request, Model model,@PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		if (id > 0){
+			Assignment assignment = assignmentServiceImpl.loadAssignmentById(id);
+			modelView.addObject("assignment", assignment);
+		}
+		modelView.setViewName("admin/alterAssignment");
+		return modelView;
 	}
 	
 	

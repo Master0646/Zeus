@@ -19,4 +19,6 @@ public interface CurriculumDao {
     public List<Curriculum> getCurriculumListByPageAndTeacher(int teacherId, int limit, int offset);
     
     public int countCurriculumByTeacher(int teacherId);
+    
+    public Curriculum loadCurriculumById(int id);
 }

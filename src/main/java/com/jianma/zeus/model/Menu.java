@@ -71,7 +71,7 @@ public class Menu implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "create_at", nullable = false, length = 19)
+	@Column(name = "create_at", nullable = true, length = 19)
 	public Date getCreateAt() {
 		return this.createAt;
 	}
@@ -81,7 +81,7 @@ public class Menu implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "update_at", length = 19)
+	@Column(name = "update_at", nullable = true,length = 19)
 	public Date getUpdateAt() {
 		return this.updateAt;
 	}

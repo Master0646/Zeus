@@ -44,7 +44,7 @@ public class SchoolDaoImpl implements SchoolDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " delete from School s  where s.id = ?";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, schoolId);
+		query.setParameter(0, schoolId.intValue());
 		query.executeUpdate();
 	}
 
@@ -64,6 +64,30 @@ public class SchoolDaoImpl implements SchoolDao {
 		Query query = session.createQuery(hql);
 		query.setParameter(0, schoolName);
 		return query.list();
+	}
+
+	@Override
+	public List<School> getSchoolByPage(int limit, int offset) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " from School s order by createAt desc ";
+		Query query = session.createQuery(hql);
+		query.setFirstResult(offset);
+		query.setMaxResults(limit);
+		return query.list();
+	}
+
+	@Override
+	public int countSchool() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "select count(s) from School s ";
+		Query query = session.createQuery(hql); 
+        return (int)((Long)query.uniqueResult()).longValue();
+	}
+
+	@Override
+	public School loadSchoolById(int id) {
+		Session session = sessionFactory.getCurrentSession();
+		return (School)session.get(School.class, id);
 	}
 
 }

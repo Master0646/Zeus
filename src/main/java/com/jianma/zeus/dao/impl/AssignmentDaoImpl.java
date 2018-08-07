@@ -37,7 +37,7 @@ public class AssignmentDaoImpl implements AssignmentDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " update Assignment a set a.valid = 0 where a.id = ?";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, AssignmentId);
+		query.setParameter(0, AssignmentId.intValue());
 		query.executeUpdate();
 	}
 
@@ -144,6 +144,12 @@ public class AssignmentDaoImpl implements AssignmentDao {
 		query.setParameter(0, tagName);
 		
         return (int)((Long)query.uniqueResult()).longValue();
+	}
+
+	@Override
+	public Assignment loadAssignmentById(int id) {
+		Session session = sessionFactory.getCurrentSession();
+		return (Assignment)session.get(Assignment.class, id);
 	}
 
 }

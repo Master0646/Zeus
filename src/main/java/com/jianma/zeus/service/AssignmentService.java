@@ -18,4 +18,6 @@ public interface AssignmentService {
     public PageModel getAssignmentListByPageAndCurriculumId(int curriculumId, int limit, int offset);
     
     public PageModel getAssignmentListByTagName(String tagName, int limit, int offset);
+    
+    public Assignment loadAssignmentById(int id);
 }

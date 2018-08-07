@@ -71,4 +71,9 @@ public class CurriculumServiceImpl implements CurriculumService {
 		return pageModel;
 	}
 
+	@Override
+	public Curriculum loadCurriculumById(int id) {
+		return curriculumDaoImpl.loadCurriculumById(id);
+	}
+
 }

@@ -37,7 +37,7 @@ public class TagDaoImpl implements TagDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " delete from Tag t  where t.id = ?";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, tagId);
+		query.setParameter(0, tagId.intValue());
 		query.executeUpdate();
 	}
 

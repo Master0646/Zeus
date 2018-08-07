@@ -27,4 +27,6 @@ public interface AssignmentDao {
     public List<Assignment> getAssignmentListByTagName(String tagName, int limit, int offset);
     
     public int countAssignmentByTagName(String tagName);
+    
+    public Assignment loadAssignmentById(int id);
 }

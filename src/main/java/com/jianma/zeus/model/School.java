@@ -83,7 +83,7 @@ public class School implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "create_at", length = 19)
+	@Column(name = "create_at", nullable = true,length = 19)
 	public Date getCreateAt() {
 		return this.createAt;
 	}

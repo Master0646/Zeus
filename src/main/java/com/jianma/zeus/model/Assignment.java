@@ -95,7 +95,7 @@ public class Assignment implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "insert_at", nullable = false, length = 19)
+	@Column(name = "insert_at", nullable = true, length = 19)
 	public Date getInsertAt() {
 		return this.insertAt;
 	}

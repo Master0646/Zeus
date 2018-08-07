@@ -13,4 +13,6 @@ public interface MenuDao {
     public void deleteMenu(Long menuId);
     
     public List<Menu> getMenuList();
+    
+    public Menu loadMenuById(int id);
 }

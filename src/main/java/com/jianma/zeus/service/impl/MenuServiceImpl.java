@@ -62,4 +62,9 @@ public class MenuServiceImpl implements MenuService {
 		return menuDaoImpl.getMenuList();
 	}
 
+	@Override
+	public Menu loadMenuById(int id) {
+		return menuDaoImpl.loadMenuById(id);
+	}
+
 }

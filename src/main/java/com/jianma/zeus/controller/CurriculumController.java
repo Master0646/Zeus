@@ -20,6 +20,7 @@ import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ServerException;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.Curriculum;
+import com.jianma.zeus.model.Menu;
 import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.service.CurriculumService;
@@ -40,9 +41,15 @@ public class CurriculumController extends ZeusController {
 	}
 
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/alterCurriculum")
-	public String alterCurriculum(HttpServletRequest request, Model model) {
-		return "admin/alterCurriculum";
+	@RequestMapping(value = "/alterCurriculum/{id}")
+	public ModelAndView alterCurriculum(HttpServletRequest request, Model model,@PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		if (id > 0){
+			Curriculum curriculum = curriculumServiceImpl.loadCurriculumById(id);
+			modelView.addObject("curriculum", curriculum);
+		}
+		modelView.setViewName("admin/alterCurriculum");
+		return modelView;
 	}
 	
 	@RequiresRoles(value = { "" })

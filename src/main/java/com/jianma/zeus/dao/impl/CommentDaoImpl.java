@@ -38,7 +38,7 @@ public class CommentDaoImpl implements CommentDao {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " update Comment c set c.check = 0 where c.id = ? ";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, CommentId);
+		query.setParameter(0, CommentId.intValue());
 		query.executeUpdate();
 	}
 
