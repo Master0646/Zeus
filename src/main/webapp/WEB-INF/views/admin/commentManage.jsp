@@ -38,13 +38,6 @@
             el: '.commentManage',
             data: function(){
             	return{
-            		totalPage:100,
-            		itemList:[
-            			{ message: 'Foo' },{ message: 'Bar' },{ message: 'Foo' },{ message: 'Bar' },
-            			{ message: 'Foo' },{ message: 'Bar' },{ message: 'Foo' },{ message: 'Bar' },
-            			{ message: 'Foo' },{ message: 'Bar' },{ message: 'Foo' },{ message: 'Bar' },
-            			{ message: 'Foo' },{ message: 'Bar' },{ message: 'Foo' },{ message: 'Bar' },
-            		],
             		columns:[
                          { title: 'ID',key: 'id', align: 'center'},
                          { title: '评论内容',key: 'name', align: 'center'},

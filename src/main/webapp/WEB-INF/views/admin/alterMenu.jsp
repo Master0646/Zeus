@@ -53,13 +53,33 @@
                     	id:"",
                         name:"",
                         url:""
-                    }
+                    },
+                    redirectUrl:config.viewUrls.menuManage
                 }
             },
             methods:{
                 submit:function(){
                     var that = this;
                     var url = config.ajaxUrls.createMenu;
+                    $.ajax({
+            	        url:url,
+            	        type:"post",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        data:JSON.stringify(that.dataSourse),
+            	        success:function(res){
+            	            if(res.success){
+            	                console.log("success",res);
+            	                
+            	            }else{
+            	            	console.log("faild",res);
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(){
+            	        	console.log("error");
+            	        }
+            	    });
                 }
             }
         })

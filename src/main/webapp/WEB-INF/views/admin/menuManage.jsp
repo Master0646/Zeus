@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/lib/iview.css">
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
-	
+
 	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>
     <script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
@@ -30,7 +30,7 @@
 	      	<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 			    <p style="color:#ed3f14;text-align:center">
 			        <Icon type="information-circled"></Icon>
-			        <span style="font-size: 15px;">确定删除菜单:{{curriculumTitle}}？</span>
+			        <span style="font-size: 15px;">确定删除菜单:{{menuTitle}}？</span>
 			    </p>
 			</modal>
 	      	<i-button type="primary" @click="createCurriculum"><Icon type="plus"></Icon> 新建</i-button>
@@ -45,7 +45,7 @@
           		return{
                  	index:"",
                 	deleteModal: false,
-               	   	curriculumTitle:"",
+                	menuTitle:"",
                	   	columns:[
                      	{ title: 'ID',key: 'id', align: 'center'},
                       	{ title: '菜单名',key: 'name', align: 'center'},
@@ -82,11 +82,7 @@
                          }
                      }
                   ],
-                  dataList:[
-                      {id:"1",name:"1",url:"url_1"},
-                      {id:"2",name:"2",url:"url_2"},
-                      {id:"3",name:"3",url:"url_3"}
-                  ]
+                  dataList:[]
           		}
           },
           methods: {
@@ -103,8 +99,26 @@
               remove:function(index) {
                   this.index = index;
                   this.deleteModal = true;
-                  console.log("removeremove:",index);
               }
+          },
+          created:function(){
+        	  var that = this;
+			   	$.ajax({
+			        url:config.ajaxUrls.getMenuList,
+			        type:"GET",
+			        dataType:"json",
+			        contentType :"application/json; charset=UTF-8",	
+			        success:function(res){
+			            if(res.success){
+							that.dataList = res.object;
+			            }else{
+			            	that.$Notice.error({title:res.message});
+			            }
+			        },
+			        error:function(){
+			        	that.$Notice.error({title:config.messages.loadDataError});
+			        }
+			    });
           }
       })
     </script>

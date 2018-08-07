@@ -48,6 +48,7 @@ var config = {
 		updateRoleMenu : "roleMenu/updateRoleMenu",
 		getRoleMenuList:"roleMenu/getRoleMenuList",
 		// 院校
+		getSchoolByPage:"school/getSchoolByPage",
 		createSchool:"school/createSchool",
 		deleteSchool:"school/deleteSchool/:id",
 		updateSchool:"school/updateSchool",

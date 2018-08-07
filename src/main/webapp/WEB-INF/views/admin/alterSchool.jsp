@@ -12,6 +12,12 @@
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	
+	<script>
+		var province = '${school.province}',
+			name = '${school.name}',
+			academy = '${school.academy}';
+	</script>
+	
 	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>
 	<script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
@@ -58,12 +64,49 @@
 						province : "",
 						name : "",
 						academy : ""
-					}
+					},
+                    redirectUrl:config.viewUrls.schoolManage,
+                    submitUrl:""
 				}
 			},
 			methods : {
 				submit : function() {
-					console.log("submit");
+					var that = this;
+					$.ajax({
+            	        url:this.submitUrl,
+            	        type:"post",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        data:JSON.stringify(that.dataSourse),
+            	        success:function(res){
+            	            if(res.success){
+            	            	if(that.redirectUrl){
+            	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
+	           	                    setTimeout(function(){
+	               	                    window.location.href=that.redirectUrl;
+	           	                    },3000);
+            	            	}
+            	            }else{
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(err){
+            	        	that.$Notice.error({title:config.messages.loadDataError});
+            	        }
+            	    });
+				}
+			},
+			created:function(){
+				var that = this;
+				var	schoolId = window.location.pathname.split("/Zeus/school/alterSchool/")[1];	//获取院校id
+				if(schoolId != 0){
+   	            	that.dataSourse.id = schoolId;
+   	            	that.dataSourse.province = province;
+   	            	that.dataSourse.name = name;
+   	            	that.dataSourse.academy = academy;
+					this.submitUrl = config.ajaxUrls.updateSchool;
+				}else{
+					this.submitUrl = config.ajaxUrls.createSchool;
 				}
 			}
 		})
