@@ -29,30 +29,15 @@
 		    </breadcrumb><br />
 	         <div>
 			    <i-form :model="dataSourse" :label-width="180" style="width:80%;">
-			                 <form-item label="角色">
-			                     <i-select v-model="dataSourse.role" style="width:200px" @on-change="selectChange">
-			                         <i-option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
-			                     </i-select>
+	                 <form-item label="角色">
+	                     <i-select v-model="dataSourse.roleId" style="width:200px" @on-change="selectChange">
+	                         <i-option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+	                     </i-select>
 			        </form-item>
-			                 <form-item label="菜单选择">
-			                     <checkbox-group v-model="menuList" @on-change="checkboxChange">
-			                         <checkbox label="user">
-			                             <icon type="person-stalker"></icon>
-			                             <span>用户</span>
-			                         </checkbox>
-			                         <checkbox label="school">
-			                             <icon type="university"></icon>
-			                             <span>学校</span>
-			                         </checkbox>
-			                         <checkbox label="curriculum">
-			                             <icon type="cube"></icon>
-			                             <span>课程</span>
-			                         </checkbox>
-			                         <checkbox label="work">
-			                             <icon type="edit"></icon>
-			                             <span>作业</span>
-			                         </checkbox>
-			                     </checkbox-group>
+	                 <form-item label="菜单选择">              
+	                     <i-select v-model="roleArr" multiple style="width:200px" @on-change="checkboxChange">
+	                         <i-option v-for="item in menuList" :value="item.id" :key="item.id">{{ item.name }}</i-option>
+	                     </i-select>
 			        </form-item>
 			        <form-item>
 			        	<i-button type="primary" v-on:click="submit" long>确定</i-button>
@@ -69,15 +54,14 @@
             	 return{
                      //需要提交的数据
                      dataSourse:{
-                     	id:"",
-                         assignmentName:"",
-                         description:"",
-                         role:""
+                     	 id:"",
+                         menuId:"",
+                         roleId:""
                      },
-                     roleList: [
-                         { value: '1', label: '角色1' }, { value: '2', label: '角色2' }, { value: '3', label: '角色3' }
-                     ],
-                     menuList: []
+                     roleArr:[],
+                     roleList: [],	//存放角色
+                     menuList: [],	//存放菜单
+                     redirectUrl:config.viewUrls.roleMenuManage
             	 }
              },
              methods:{
@@ -85,11 +69,97 @@
                      console.log("value",value);
                  },
                  checkboxChange:function(array){
-                     console.log("array",array);
+                     /* this.dataSourse.menuId = array.toString(); */
+                     this.dataSourse.menuId = array[0];
                  },
                  submit:function(){
-                     console.log("submit");
+                	 console.log("submit",this.dataSourse);
+                	 this.$Loading.start();
+                 	var that = this;
+ 					$.ajax({
+             	        url:this.submitUrl,
+             	        type:"post",
+             	        dataType:"json",
+             	        contentType :"application/json; charset=UTF-8",
+             	        data:JSON.stringify(that.dataSourse),
+             	        success:function(res){
+             	            if(res.success){
+             	            	that.$Loading.finish();
+             	            	if(that.redirectUrl){
+             	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
+ 	           	                    setTimeout(function(){
+ 	               	                    window.location.href=that.redirectUrl;
+ 	           	                    },3000);
+             	            	}
+             	            }else{
+             	            	that.$Notice.error({title:res.message});
+             	            }
+             	        },
+             	        error:function(err){
+                         	that.$Loading.error();
+             	        	that.$Notice.error({title:config.messages.loadDataError});
+             	        }
+             	    });
                  }
+             },
+             created:function(){
+            	 var that = this;
+            	 this.$Loading.start();
+ 				 var roleMenuId = window.location.pathname.split("/Zeus/roleMenu/alterRoleMenu/")[1];	//获取菜单id
+ 				 if(roleMenuId != 0){
+ 	            	this.$Loading.finish();
+    	            	that.dataSourse.id = roleMenuId;
+    	            	/* that.dataSourse.name = name;
+    	            	that.dataSourse.url = url; */
+ 					this.submitUrl = config.ajaxUrls.updateRoleMenu;
+ 				 }else{
+ 	            	this.$Loading.finish();
+ 					this.submitUrl = config.ajaxUrls.createRoleMenu;
+ 				 }
+            	 //获取角色数据
+				 $.ajax({
+          	        url:config.ajaxUrls.getAllRoles,
+          	        type:"get",
+          	        dataType:"json",
+          	        contentType :"application/json; charset=UTF-8",
+          	        success:function(res){
+          	            if(res.success){
+           	            	console.log("res",res);
+          	            	//角色数据筛选
+          	            	that.roleList = res.object;
+          	            	var dataArr = res.object;
+          	            	for(var i = 0;i<dataArr.length;i++){
+          	            		that.roleList[i].value = dataArr[i].id;
+          	            		that.roleList[i].label = dataArr[i].rolename;
+          	            	}
+          	            }else{
+          	            	that.$Notice.error({title:res.message});
+          	            }
+          	        },
+          	        error:function(err){
+                      	that.$Loading.error();
+          	        	that.$Notice.error({title:config.messages.loadDataError});
+          	        }
+          	    });
+				//获取菜单数据
+            	 $.ajax({
+           	        url:config.ajaxUrls.getMenuList,
+           	        type:"get",
+           	        dataType:"json",
+           	        contentType :"application/json; charset=UTF-8",
+           	        success:function(res){
+           	            if(res.success){
+           	            	console.log(res);
+           	            	that.menuList = res.object;
+           	            }else{
+           	            	that.$Notice.error({title:res.message});
+           	            }
+           	        },
+           	        error:function(err){
+                       	that.$Loading.error();
+           	        	that.$Notice.error({title:config.messages.loadDataError});
+           	        }
+           	    });
              }
          })
      </script>

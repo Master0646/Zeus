@@ -44,7 +44,7 @@ public class CurriculumDaoImpl implements CurriculumDao {
 	@Override
 	public List<Curriculum> getCurriculumListByPage(int limit, int offset) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " from Curriculum c order by updateAt desc";
+		String hql = " from Curriculum c where c.valid = 1 order by updateAt desc";
 		Query query = session.createQuery(hql);
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
@@ -54,7 +54,7 @@ public class CurriculumDaoImpl implements CurriculumDao {
 	@Override
 	public int countCurriculum() {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "select count(c) from Curriculum c ";
+		String hql = "select count(c) from Curriculum c where c.valid = 1 ";
 		Query query = session.createQuery(hql); 
         return (int)((Long)query.uniqueResult()).longValue();
 	}
@@ -62,7 +62,7 @@ public class CurriculumDaoImpl implements CurriculumDao {
 	@Override
 	public List<Curriculum> getCurriculumListByPageAndTeacher(int teacherId, int limit, int offset) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " from Curriculum c where c.teacherId = ? order by updateAt desc";
+		String hql = " from Curriculum c where c.teacherId = ? and c.valid = 1 order by updateAt desc";
 		Query query = session.createQuery(hql);
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
@@ -73,7 +73,7 @@ public class CurriculumDaoImpl implements CurriculumDao {
 	@Override
 	public int countCurriculumByTeacher(int teacherId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "select count(c) from Curriculum c where c.teacherId = ? ";
+		String hql = "select count(c) from Curriculum c where c.teacherId = ? and c.valid = 1 ";
 		Query query = session.createQuery(hql); 
 		query.setParameter(0, teacherId);
         return (int)((Long)query.uniqueResult()).longValue();

@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ZeusException;
 import com.jianma.zeus.model.Comment;
+import com.jianma.zeus.model.Menu;
 import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.service.CommentService;
@@ -32,9 +34,11 @@ public class CommentController extends ZeusController {
 	private  CommentService commentServiceImpl;
 	
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/commentManage")
-	public String commentManage(HttpServletRequest request, Model model) {
-		return "admin/commentManage";
+	@RequestMapping(value = "/commentManage/{id}")
+	public ModelAndView commentManage(HttpServletRequest request, Model model,@PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		modelView.setViewName("admin/commentManage");
+		return modelView;
 	}
 	
 	@RequiresRoles(value ={""})

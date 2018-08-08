@@ -12,11 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ZeusException;
@@ -41,9 +43,15 @@ public class RoleMenuController extends ZeusController{
 	}
 
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/alterRoleMenu")
-	public String alterRoleMenu(HttpServletRequest request, Model model) {
-		return "admin/alterRoleMenu";
+	@RequestMapping(value = "/alterRoleMenu/{id}")
+	public ModelAndView alterRoleMenu(HttpServletRequest request, Model model, @PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		if (id > 0){
+			RoleMenu roleMenu = roleMenuServiceImpl.loadRoleMenuById(id);
+			modelView.addObject("roleMenu", roleMenu);
+		}
+		modelView.setViewName("admin/alterRoleMenu");
+		return modelView;
 	}
 	
 	@RequiresRoles(value = { "" })

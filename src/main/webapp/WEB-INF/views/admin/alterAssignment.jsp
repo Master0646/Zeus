@@ -25,6 +25,8 @@
 	<div class="right">
 	    <div class="alterAssignment" style="margin: 20px 20px;" v-cloak>
 		     <breadcrumb>
+		        <breadcrumb-item to="curriculum/curriculumManage">课程管理</breadcrumb-item>
+		        <breadcrumb-item to="assignment/assignmentManage">作业管理</breadcrumb-item>
 		        <breadcrumb-item>新建/修改作业</breadcrumb-item>
 		     </breadcrumb><br />
 		     <div>
@@ -51,15 +53,54 @@
 	                //需要提交的数据
 	                dataSourse:{
 	                	id:"",
-	                	curriculumId:"",	//所属课程id
+	                	curriculumId:1,	//所属课程id
 	                    name:""
-	                }
+	                },
+	                submitUrl:"",
+	                redirectUrl:config.viewUrls.assignmentManage
 	            }
 	        },
 	        methods:{
 	            submit:function(){
-	                console.log("submit");
+	            	var that = this;
+                	this.$Loading.start();
+					$.ajax({
+            	        url:this.submitUrl,
+            	        type:"post",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        data:JSON.stringify(that.dataSourse),
+            	        success:function(res){
+            	            if(res.success){
+                            	that.$Loading.finish();
+            	            	if(that.redirectUrl){
+            	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
+	           	                    setTimeout(function(){
+	               	                    window.location.href=that.redirectUrl;
+	           	                    },3000);
+            	            	}
+            	            }else{
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(err){
+                        	that.$Loading.error();
+            	        	that.$Notice.error({title:config.messages.loadDataError});
+            	        }
+            	    });
 	            }
+	        },
+	        created:function(){
+	        	var that = this;
+				var	assignmentId = window.location.pathname.split("/Zeus/assignment/alterAssignment/")[1];	//获取课程id
+				if(assignmentId != 0){
+   	            	that.dataSourse.id = assignmentId;
+   	            	/* that.dataSourse.name = name;
+   	            	that.dataSourse.remark = remark;*/
+					this.submitUrl = config.ajaxUrls.updateAssignment; 
+				}else{
+					this.submitUrl = config.ajaxUrls.createAssignment;
+				}
 	        }
 	    })
 	</script>

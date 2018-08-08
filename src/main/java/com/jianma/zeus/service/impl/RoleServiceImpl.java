@@ -1,5 +1,8 @@
 package com.jianma.zeus.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -40,6 +43,21 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public void uncorrelationPermissions(Long roleId, Long... permissionIds) {
 		roleDaoImpl.uncorrelationPermissions(roleId, permissionIds);
+	}
+
+	@Override
+	public List<Role> getAllRoles() {
+		List<Role> listRole = roleDaoImpl.getAllRoles();
+		
+		List<Role> returnList = new ArrayList<>();
+		Role resultRole = null;
+		for (Role role : listRole){
+			resultRole = new Role();
+			resultRole.setRolename(role.getRolename());
+			resultRole.setId(role.getId());
+			returnList.add(resultRole);
+		}
+		return returnList;
 	}
 
 }

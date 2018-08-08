@@ -43,11 +43,12 @@
     	var pageName = "curriculum";
         var curriculumManage = new Vue({
             el: '.curriculumManage',
-            data: function(){
+            data:function(){
                 return{
                     index:"",
                     deleteModal: false,
                     curriculumTitle:"",
+                    aoData:{limit:10, offset:0},
                     columns:[
                         { title: 'ID',key: 'id', align: 'center'},
                         { title: '老师',key: 'teacherId', align: 'center'},
@@ -65,7 +66,7 @@
                                         },
                                         on: {
                                             click: () => {
-                                                this.chick(params.index)
+                                                this.assignmentManage(params.index)
                                             }
                                         }
                                     }, '查看')
@@ -124,22 +125,53 @@
                            }
                        }
                     ],
-                    dataList:[
-                        {id:"1",name:"语文",teacherId:"1"},
-                        {id:"2",name:"数学",teacherId:"2"},
-                        {id:"3",name:"音乐",teacherId:"3"}
-                    ]
+                    dataList:[]
                 }
             },
             methods: {
                 ok: function () {
-					
+                	var id = this.dataList[this.index].id;
+                	var that = this;
+                	this.$Loading.start();
+                	$.ajax({
+                        "dataType":'json',
+                        "type":"DELETE",
+                        "data":{id:id},
+                        "url":config.ajaxUrls.deleteCurriculum.replace(":id",id),
+                        "success": function (res) {
+                            if(res.success===false){
+                            	that.$Notice.error({title:res.message});
+                            }else{
+                            	that.$Notice.success({title:config.messages.optSuccess});
+                            	$.ajax({
+                			        url:config.ajaxUrls.getCurriculumListByPage,
+                			        type:"GET",
+                			        data:that.aoData,
+                			        dataType:"json",
+                			        contentType :"application/json; charset=UTF-8",	
+                			        success:function(res){
+                			            if(res.success){
+                			            	console.log("success");
+                	                    	that.$Loading.finish();
+                							that.dataList = res.object.list;
+                			            }else{
+                			            	that.$Notice.error({title:res.message});
+                			            }
+                			        },
+                			        error:function(){
+                	                	that.$Loading.error();
+                			        	that.$Notice.error({title:config.messages.loadDataError});
+                			        }
+                			    });
+                            }
+                        }
+                    });
                 },
                 //新建课程
                 createCurriculum:function(){
-                    window.location.href="curriculum/alterCurriculum";
+                    window.location.href="curriculum/alterCurriculum/0";
                 },
-                chick:function(index){
+                assignmentManage:function(index){
                 	window.location.href="assignment/assignmentManage";
                 },
                 chickSubmission:function(index){
@@ -147,10 +179,36 @@
                 },
                 change:function(index){
                     console.log("changechange:",index);
+                    window.location.href="curriculum/alterCurriculum/"+this.dataList[index].id;
                 },
                 remove:function(index) {
-                    console.log("removeremove:",index);
+                    this.index = index;
+                    this.deleteModal = true;
+                    this.curriculumTitle = this.dataList[index].name;
                 }
+            },
+            created:function(){
+            	this.$Loading.start();
+        	    var that = this;
+			   	$.ajax({
+			        url:config.ajaxUrls.getCurriculumListByPage,
+			        type:"GET",
+			        data:this.aoData,
+			        dataType:"json",
+			        contentType :"application/json; charset=UTF-8",	
+			        success:function(res){
+			            if(res.success){
+	                    	that.$Loading.finish();
+							that.dataList = res.object.list;
+			            }else{
+			            	that.$Notice.error({title:res.message});
+			            }
+			        },
+			        error:function(){
+	                	that.$Loading.error();
+			        	that.$Notice.error({title:config.messages.loadDataError});
+			        }
+			    });
             }
         })
       </script>

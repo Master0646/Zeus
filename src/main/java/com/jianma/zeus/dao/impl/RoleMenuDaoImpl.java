@@ -65,4 +65,10 @@ public class RoleMenuDaoImpl implements RoleMenuDao {
         return mList;
 	}
 
+	@Override
+	public RoleMenu loadRoleMenuById(int id) {
+		Session session = sessionFactory.getCurrentSession();
+		return (RoleMenu)session.get(RoleMenu.class, id);
+	}
+
 }

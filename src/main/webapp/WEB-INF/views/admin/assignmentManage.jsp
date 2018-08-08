@@ -34,7 +34,7 @@
 		          	<span style="font-size: 15px;">确定删除作业:{{assignmentTitle}}？</span>
 		      	</p>
 		  	</modal>
-	        <i-button type="primary" @click="createAssignment"><Icon type="plus"></Icon> 新建</i-button>
+	        <!-- <i-button type="primary" @click="createAssignment"><Icon type="plus"></Icon> 新建</i-button> -->
 	        <i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
 	    </div>
     </div>
@@ -103,13 +103,12 @@
                 ok: function () {
                     
                 },
-                createAssignment:function(){
-                    console.log("!!!!!!!!!!!!!!");
-                    window.location.href="assignment/alterAssignment";
-                },
+                /* createAssignment:function(){
+                    window.location.href="assignment/alterAssignment/0";
+                }, */
                 chickComment:function(index){
                     console.log("chickComment:",index);
-                    window.location.href="comment/commentManage";
+                    window.location.href="comment/commentManage/" + this.dataList[index].id;
                 },
                 grade:function(index){
                     console.log(" score:",index);

@@ -12,4 +12,6 @@ public interface RoleMenuService {
     public int updateRoleMenu(Long roleId, List<Integer> menuIds);
     
     public List<Menu> getMenuListByRoleId(List<Integer> roleIds);
+    
+    public RoleMenu loadRoleMenuById(int id);
 }

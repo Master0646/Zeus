@@ -87,14 +87,47 @@
           },
           methods: {
               ok: function () {
-				console.log(this.index);
+            	this.$Loading.start();
+				var id = this.dataList[this.index].id;
+            	var that = this;
+            	$.ajax({
+                    "dataType":'json',
+                    "type":"DELETE",
+                    "data":{id:id},
+                    "url":config.ajaxUrls.deleteMenu.replace(":id",id),
+                    "success": function (res) {
+                        if(res.success===false){
+                        	that.$Notice.error({title:res.message});
+                        }else{
+                        	that.$Notice.success({title:config.messages.optSuccess});
+                        	$.ajax({
+            			        url:config.ajaxUrls.getMenuList,
+            			        type:"GET",
+            			        dataType:"json",
+            			        contentType :"application/json; charset=UTF-8",	
+            			        success:function(res){
+            			            if(res.success){
+                	                	that.$Loading.finish();
+            							that.dataList = res.object;
+            			            }else{
+            			            	that.$Notice.error({title:res.message});
+            			            }
+            			        },
+            			        error:function(){
+            	                	that.$Loading.error();
+            			        	that.$Notice.error({title:config.messages.loadDataError});
+            			        }
+            			    });
+                        }
+                    }
+                });
               },
               //新建课程
               createCurriculum:function(){
-                  window.location.href="menu/alterMenu";
+                  window.location.href="menu/alterMenu/0";
               },
               change:function(index){
-                  console.log("changechange:",index);
+              		window.location.href="menu/alterMenu/"+this.dataList[index].id;
               },
               remove:function(index) {
                   this.index = index;
@@ -102,7 +135,8 @@
               }
           },
           created:function(){
-        	  var that = this;
+          		this.$Loading.start();
+        	    var that = this;
 			   	$.ajax({
 			        url:config.ajaxUrls.getMenuList,
 			        type:"GET",
@@ -110,12 +144,14 @@
 			        contentType :"application/json; charset=UTF-8",	
 			        success:function(res){
 			            if(res.success){
+	                    	that.$Loading.finish();
 							that.dataList = res.object;
 			            }else{
 			            	that.$Notice.error({title:res.message});
 			            }
 			        },
 			        error:function(){
+	                	that.$Loading.error();
 			        	that.$Notice.error({title:config.messages.loadDataError});
 			        }
 			    });

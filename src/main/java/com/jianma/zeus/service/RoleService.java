@@ -1,5 +1,7 @@
 package com.jianma.zeus.service;
 
+import java.util.List;
+
 import com.jianma.zeus.model.Role;
 
 public interface RoleService {
@@ -9,4 +11,6 @@ public interface RoleService {
 
     public void correlationPermissions(Long roleId, Long... permissionIds);
     public void uncorrelationPermissions(Long roleId, Long... permissionIds);
+    
+    public List<Role> getAllRoles();
 }

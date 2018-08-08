@@ -64,4 +64,10 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 		return list;
 	}
 
+	@Override
+	public RoleMenu loadRoleMenuById(int id) {
+		
+		return roleMenuDaoImpl.loadRoleMenuById(id);
+	}
+
 }

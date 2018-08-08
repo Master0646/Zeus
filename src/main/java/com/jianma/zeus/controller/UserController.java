@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.jianma.zeus.ZeusController;
 import com.jianma.zeus.exception.ServerException;
 import com.jianma.zeus.exception.ZeusException;
+import com.jianma.zeus.model.Menu;
 import com.jianma.zeus.model.PageModel;
 import com.jianma.zeus.model.ResultModel;
 import com.jianma.zeus.model.User;
@@ -43,9 +44,15 @@ public class UserController extends ZeusController {
 	}
 
 	@RequiresRoles(value = { "管理员" })
-	@RequestMapping(value = "/alterUser")
-	public String alterSchool(HttpServletRequest request, Model model) {
-		return "admin/alterUser";
+	@RequestMapping(value = "/alterUser/{id}")
+	public ModelAndView alterSchool(HttpServletRequest request, Model model,@PathVariable int id) {
+		ModelAndView modelView = new ModelAndView();
+		if (id > 0){
+			Optional<User> user = userServiceImpl.findOne((long)id);
+			modelView.addObject("user", user.get());
+		}
+		modelView.setViewName("admin/alterUser");
+		return modelView;
 	}
 	
 	@RequiresRoles(value ={""})
@@ -216,7 +223,7 @@ public class UserController extends ZeusController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/getUserByPage", method = RequestMethod.POST)
+	@RequestMapping(value = "/getUserByPage", method = RequestMethod.GET)
 	public ResultModel getUserByPage(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam int offset, @RequestParam int limit) {
 
@@ -228,6 +235,7 @@ public class UserController extends ZeusController {
 			resultModel.setSuccess(true);
 			resultModel.setResultCode(200);
 		} catch (Exception e) {
+			e.printStackTrace();
 			resultModel.setSuccess(false);
 		}
 		return resultModel;

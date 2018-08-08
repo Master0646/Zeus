@@ -32,6 +32,7 @@
 	<div class="right">
 		<div class="schoolCOU" style="margin: 20px 20px;" v-cloak>
 			<breadcrumb>
+		        <breadcrumb-item to="school/schoolManage">院校管理</breadcrumb-item>
 		        <breadcrumb-item>新建/修改院校</breadcrumb-item>
 		    </breadcrumb><br />
 			<div>
@@ -72,6 +73,7 @@
 			methods : {
 				submit : function() {
 					var that = this;
+                	this.$Loading.start();
 					$.ajax({
             	        url:this.submitUrl,
             	        type:"post",
@@ -80,6 +82,7 @@
             	        data:JSON.stringify(that.dataSourse),
             	        success:function(res){
             	            if(res.success){
+                            	that.$Loading.finish();
             	            	if(that.redirectUrl){
             	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
 	           	                    setTimeout(function(){
@@ -91,6 +94,7 @@
             	            }
             	        },
             	        error:function(err){
+                        	that.$Loading.error();
             	        	that.$Notice.error({title:config.messages.loadDataError});
             	        }
             	    });

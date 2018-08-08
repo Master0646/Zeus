@@ -49,6 +49,7 @@
                     index:"",
                     deleteModal: false,
                     userTitle:"",
+                    aoData:{limit:10, offset:0},
                     columns:[
                         { title: 'ID',key: 'id', align: 'center'},
                         { title: '姓名',key: 'name', align: 'center'},
@@ -97,15 +98,40 @@
 
                 },
                 createUser:function(){
-                    console.log("!!!!!!!!!!!!!!");
-                    window.location.href="user/alterUser";
+                    window.location.href = "user/alterUser/0";
                 },
                 change:function(index){
-                    console.log("changechange:",index);
+                    window.location.href = "user/alterUser/" + this.dataList[index].id;
                 },
                 remove:function(index) {
                     console.log("removeremove:",index);
                 }
+            },
+            created:function(){
+            	this.$Loading.start();
+        	    var that = this;
+			   	$.ajax({
+			        url:config.ajaxUrls.getUserByPage,
+			        type:"get",
+			        data:this.aoData,
+			        dataType:"json",
+			        contentType :"application/json; charset=UTF-8",	
+			        success:function(res){
+			            if(res.success){
+			            	console.log(res);
+	                    	that.$Loading.finish();
+							/* that.dataList = res.object.list; */
+			            }else{
+			            	console.log("faild");
+			            	that.$Notice.error({title:res.message});
+			            }
+			        },
+			        error:function(){
+		            	console.log("error");
+	                	that.$Loading.error();
+			        	that.$Notice.error({title:config.messages.loadDataError});
+			        }
+			    });
             }
         })
       </script>

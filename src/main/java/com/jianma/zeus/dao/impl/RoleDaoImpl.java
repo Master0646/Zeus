@@ -1,5 +1,8 @@
 package com.jianma.zeus.dao.impl;
 
+import java.util.List;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,14 @@ public class RoleDaoImpl implements RoleDao {
 	public void uncorrelationPermissions(Long roleId, Long... permissionIds) {
 
 
+	}
+
+	@Override
+	public List<Role> getAllRoles() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " from Role ";
+		Query query = session.createQuery(hql);
+		return query.list();
 	}
 
 }

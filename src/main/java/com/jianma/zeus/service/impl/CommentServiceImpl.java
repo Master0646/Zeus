@@ -25,6 +25,7 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public int createComment(Comment comment) {
 		try{
+			comment.setCheck(true);
 			commentDaoImpl.createComment(comment);
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}

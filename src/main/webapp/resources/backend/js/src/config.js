@@ -55,15 +55,22 @@ var config = {
 		getSchoolByProvince:"school/getSchoolByProvince", //查询学校
 		getAcademyBySchoolName:"school/getAcademyBySchoolName",	//查询系部
 		// 课程
-		curriculumManage:"curriculum/createCurriculum",
+		createCurriculum:"curriculum/createCurriculum",
 		deleteCurriculum:"curriculum/deleteCurriculum/:id",
 		updateCurriculum:"curriculum/updateCurriculum",
 		getCurriculumListByPage:"curriculum/getCurriculumListByPage",
+		// 作业     Assignment   assignment
+		createAssignment:"assignment/createAssignment",
+		deleteAssignment:"assignment/deleteAssignment/:id",
+		updateAssignment:"assignment/updateAssignment",
+		getAssignmentListByPage:"assignment/getAssignmentListByPage",
 		// 用户
 		createUser:"user/createUser",
 		deleteUser:"user/deleteUser/:id",
 		updateUser:"user/updateUser",
-		getUserByPage:"user/getUserByPage" 
+		getUserByPage:"user/getUserByPage",
+		//角色			
+		getAllRoles:"role/getAllRoles"
 	},
 	viewUrls : {
 		newsMgr : "news/newsMgr",
@@ -77,6 +84,9 @@ var config = {
 		// 院校
 		schoolManage:"school/schoolManage",
 		alterSchool:"school/alterSchool",
+		// 作业
+		assignmentManage:"assignment/assignmentManage",
+		alterAssignment:"assignment/alterAssignment",
 		// 课程
 		curriculumManage:"curriculum/curriculumManage",
 		alterCurriculum:"curriculum/alterCurriculum",

@@ -29,8 +29,8 @@
 		    </breadcrumb><br />
 	     	<div>
 				<i-form :model="dataSourse" :label-width="180" style="width:80%;">
-		            <form-item label="权限">
-		                <i-select v-model="dataSourse.groupModel" style="width:200px" @on-change="groupCheck">
+		            <form-item label="角色">
+		                <i-select v-model="dataSourse.userRoles.role" style="width:200px" @on-change="groupCheck">
 		     				<i-option v-for="Groupitem in GroupList" :value="Groupitem.value" :key="Groupitem.value" >{{ Groupitem.label }}</i-option>
 		     			</i-select>
 			        </form-item>
@@ -73,9 +73,8 @@
                 return{
                     //需要提交的数据
                     dataSourse:{
-                    	// headicon: uploadImage,
+                    	headPortrait: "",
                     	id:"",
-                        groupModel:"",
                     	email:"",		//账号
                     	password:"",	//密码
                     	realname:"",
@@ -84,17 +83,58 @@
                         school:"",
                     	academy:"",
                     	address:"",
+                    	userRoles:[{role:""},{user:1}]
                     },
-                    GroupList:[{value:"0",label:"权限1"},{value:"1",label:"权限2"},{value:"2",label:"权限3"}]
+                    GroupList:[{value:"0",label:"权限1"},{value:"1",label:"权限2"},{value:"2",label:"权限3"}],
+                    redirectUrl:config.viewUrls.userManage,
+                    submitUrl:""
                 }
             },
             methods:{
                 submit:function(){
-                    console.log("submit");
+                    var that = this;
+                	this.$Loading.start();
+					$.ajax({
+            	        url:this.submitUrl,
+            	        type:"post",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        data:JSON.stringify(that.dataSourse),
+            	        success:function(res){
+            	            if(res.success){
+                            	that.$Loading.finish();
+            	            	if(that.redirectUrl){
+            	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
+	           	                    setTimeout(function(){
+	               	                    window.location.href=that.redirectUrl;
+	           	                    },3000);
+            	            	}
+            	            }else{
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(err){
+                        	that.$Loading.error();
+            	        	that.$Notice.error({title:config.messages.loadDataError});
+            	        }
+            	    });
                 },
-                groupCheck:function(){
-                    console.log("groupCheck");
+                groupCheck:function(index){
+                    this.dataSourse.userRoles[0].role = this.GroupList[index].value;
                 }
+            },
+            created:function(){
+            	/* var that = this;
+				var	userId = window.location.pathname.split("/Zeus/user/alterUser/")[1];	//获取课程id
+				if(userId != 0){
+   	            	that.dataSourse.id = userId;
+   	            	that.dataSourse.name = name;
+   	            	that.dataSourse.remark = remark;
+					this.submitUrl = config.ajaxUrls.updateUser; 
+				}else{
+					this.submitUrl = config.ajaxUrls.createUser;
+				} */
+				this.submitUrl = config.ajaxUrls.createUser;
             }
         })
     </script>

@@ -11,6 +11,10 @@
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
 	
+	<script>
+		var name = '${menu.name}',
+			url = '${menu.url}';
+	</script>
 </head>
 <body>
 	<%@ include file="header.jsp"%>
@@ -20,6 +24,7 @@
 	<div class="right">
 	    <div class="alterMenu" style="margin: 20px 20px;" v-cloak>
 	        <breadcrumb>
+		        <breadcrumb-item to="menu/menuManage">菜单管理</breadcrumb-item>
 		        <breadcrumb-item>新建/修改菜单</breadcrumb-item>
 		    </breadcrumb><br />
 	        <div>
@@ -59,28 +64,48 @@
             },
             methods:{
                 submit:function(){
-                    var that = this;
-                    var url = config.ajaxUrls.createMenu;
-                    $.ajax({
-            	        url:url,
+                	this.$Loading.start();
+                	var that = this;
+					$.ajax({
+            	        url:this.submitUrl,
             	        type:"post",
             	        dataType:"json",
             	        contentType :"application/json; charset=UTF-8",
             	        data:JSON.stringify(that.dataSourse),
             	        success:function(res){
             	            if(res.success){
-            	                console.log("success",res);
-            	                
+            	            	that.$Loading.finish();
+            	            	if(that.redirectUrl){
+            	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
+	           	                    setTimeout(function(){
+	               	                    window.location.href=that.redirectUrl;
+	           	                    },3000);
+            	            	}
             	            }else{
-            	            	console.log("faild",res);
             	            	that.$Notice.error({title:res.message});
             	            }
             	        },
-            	        error:function(){
-            	        	console.log("error");
+            	        error:function(err){
+                        	that.$Loading.error();
+            	        	that.$Notice.error({title:config.messages.loadDataError});
             	        }
             	    });
                 }
+            },
+            created:function(){
+            	var that = this;
+            	this.$Loading.start();
+				var	menuId = window.location.pathname.split("/Zeus/menu/alterMenu/")[1];	//获取菜单id
+				if(menuId != 0){
+	            	this.$Loading.finish();
+   	            	that.dataSourse.id = menuId;
+   	            	that.dataSourse.name = name;
+   	            	that.dataSourse.url = url;
+					this.submitUrl = config.ajaxUrls.updateMenu;
+				}else{
+	            	this.$Loading.finish();
+					this.submitUrl = config.ajaxUrls.createMenu;
+				}
             }
         })
     </script>

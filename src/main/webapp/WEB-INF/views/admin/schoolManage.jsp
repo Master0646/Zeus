@@ -95,6 +95,7 @@
                     ok: function () {
                     	var id = this.dataList[this.index].id;
                     	var that = this;
+                    	this.$Loading.start();
                     	$.ajax({
                             "dataType":'json',
                             "type":"DELETE",
@@ -113,12 +114,14 @@
                             	        data:that.aoData,
                             	        success:function(res){
                             	            if(res.success){
+                			                	that.$Loading.finish();
                 								that.dataList = res.object.list;
                             	            }else{
                             	            	that.$Notice.error({title:res.message});
                             	            }
                             	        },
                             	        error:function(){
+                    	                	that.$Loading.error();
                             	        	that.$Notice.error({title:config.messages.loadDataError});
                             	        }
                             	    });

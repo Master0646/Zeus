@@ -13,4 +13,5 @@ public interface RoleMenuDao {
     
     public List<Menu> getMenuListByRoleId(List<Integer> roleIds);
     
+    public RoleMenu loadRoleMenuById(int id);
 }

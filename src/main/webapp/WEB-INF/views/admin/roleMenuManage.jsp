@@ -34,12 +34,13 @@
 			<modal v-model="deleteModal" @on-ok="ok" title="警告！！！">
 			<p style="color: #ed3f14; text-align: center">
 				<Icon type="information-circled"></Icon>
-				<span style="font-size: 15px;">确定删除角色-菜单:{{curriculumTitle}}？</span>
+				<span style="font-size: 15px;">确定删除角色-菜单:{{roleMenuTitle}}？</span>
 			</p>
 			</modal>
 			<i-button type="primary" @click="createCurriculum">
 			<Icon type="plus"></Icon> 新建</i-button>
 			<i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
+			<page v-model="totalPage" :current="1" :total="totalPage" @on-change="pageChange" show-total style="margin-right:60px;margin-top:20px;text-align:right;"></page>
 		</div>
 	</div>
 	<script>
@@ -50,7 +51,8 @@
           		return{
                  	index:"",
                 	deleteModal: false,
-               	   	curriculumTitle:"",
+                	roleMenuTitle:"",
+               	 	totalPage:"",
                	   	columns:[
                      	{ title: 'ID',key: 'id', align: 'center'},
                       	{ title: '角色',key: 'roleId', align: 'center'},
@@ -87,11 +89,7 @@
                          }
                      }
                   ],
-                  dataList:[
-                      {id:"1",roleId:"1",menuId:"菜单1,菜单2"},
-                      {id:"2",roleId:"2",menuId:"菜单1,菜单3"},
-                      {id:"3",roleId:"3",menuId:"菜单1,菜单2，菜单3"}
-                  ]
+                  dataList:[]
           		}
           },
           methods: {
@@ -100,14 +98,41 @@
               },
               //新建课程
               createCurriculum:function(){
-                  window.location.href="roleMenu/alterRoleMenu";
+                  window.location.href="roleMenu/alterRoleMenu/0";
               },
               change:function(index){
                   console.log("changechange:",index);
               },
               remove:function(index) {
                   console.log("removeremove:",index);
+              },
+              pageChange:function(index){
+            	  
               }
+          },
+          created:function(){
+				this.$Loading.start();
+      	    	var that = this;
+			   	$.ajax({
+			        url:config.ajaxUrls.getRoleMenuList,
+			        type:"GET",
+			        dataType:"json",
+			        data:{roleIds:0},
+			        contentType :"application/json; charset=UTF-8",	
+			        success:function(res){
+			            if(res.success){
+			            	console.log(res);
+	                    	that.$Loading.finish();
+							that.dataList = res.object;
+			            }else{
+			            	that.$Notice.error({title:res.message});
+			            }
+			        },
+			        error:function(){
+	                	that.$Loading.error();
+			        	that.$Notice.error({title:config.messages.loadDataError});
+			        }
+			    });
           }
       })
     </script>
