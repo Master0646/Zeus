@@ -52,8 +52,11 @@
                     aoData:{limit:10, offset:0},
                     columns:[
                         { title: 'ID',key: 'id', align: 'center'},
-                        { title: '姓名',key: 'name', align: 'center'},
-                        { title: '所属角色',key: 'roleId', align: 'center'},
+                        { title: '姓名',key: 'realname', align: 'center'},
+                        { title: '学校',key: 'school', align: 'center'},
+                        { title: '院系',key: 'academy', align: 'center'},
+                        { title: '邮箱',key: 'email', align: 'center'},
+                        { title: '有效',key: 'valid', align: 'center'},
                         { title: '操作',key: 'opt', align: 'center',
                     	   render: (h, params) => {
                                return h('div', [
@@ -86,16 +89,47 @@
                            }
                        }
                     ],
-                    dataList:[
-                        {id:"1",name:"用户1",roleId:"老师"},
-                        {id:"2",name:"用户2",roleId:"院校管理员"},
-                        {id:"3",name:"用户3",roleId:"系部管理员"}
-                    ]
+                    dataList:[]
                 }
             },
             methods: {
                 ok: function () {
-
+                	this.$Loading.start();
+    				var id = this.dataList[this.index].id;
+                	var that = this;
+                	$.ajax({
+                        "dataType":'json',
+                        "type":"DELETE",
+                        "data":{id:id},
+                        "url":config.ajaxUrls.deleteUser.replace(":id",id),
+                        "success": function (res) {
+                            if(res.success===false){
+                            	that.$Notice.error({title:res.message});
+                            }else{
+                            	that.$Notice.success({title:config.messages.optSuccess});
+                            	$.ajax({
+                			        url:config.ajaxUrls.getUserByPage,
+                			        type:"get",
+                			        data:that.aoData,
+                			        dataType:"json",
+                			        contentType :"application/json; charset=UTF-8",	
+                			        success:function(res){
+                			            if(res.success){
+                			            	console.log(res);
+                	                    	that.$Loading.finish();
+                							that.dataList = res.object;
+                			            }else{
+                			            	that.$Notice.error({title:res.message});
+                			            }
+                			        },
+                			        error:function(){
+                	                	that.$Loading.error();
+                			        	that.$Notice.error({title:config.messages.loadDataError});
+                			        }
+                			    });
+                            }
+                        }
+                    });
                 },
                 createUser:function(){
                     window.location.href = "user/alterUser/0";
@@ -104,7 +138,8 @@
                     window.location.href = "user/alterUser/" + this.dataList[index].id;
                 },
                 remove:function(index) {
-                    console.log("removeremove:",index);
+                    this.index = index;
+                    this.deleteModal = true;
                 }
             },
             created:function(){
@@ -115,19 +150,17 @@
 			        type:"get",
 			        data:this.aoData,
 			        dataType:"json",
-			        contentType :"application/json; charset=UTF-8",	
+			        contentType :"application/json; charset=UTF-8",
 			        success:function(res){
 			            if(res.success){
 			            	console.log(res);
 	                    	that.$Loading.finish();
-							/* that.dataList = res.object.list; */
+							that.dataList = res.object;
 			            }else{
-			            	console.log("faild");
 			            	that.$Notice.error({title:res.message});
 			            }
 			        },
 			        error:function(){
-		            	console.log("error");
 	                	that.$Loading.error();
 			        	that.$Notice.error({title:config.messages.loadDataError});
 			        }

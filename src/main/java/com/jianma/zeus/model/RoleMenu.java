@@ -57,13 +57,13 @@ public class RoleMenu implements java.io.Serializable {
 	public int getMenuId() {
 		return this.menuId;
 	}
-
+	
 	public void setMenuId(int menuId) {
 		this.menuId = menuId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "create_at", nullable = false, length = 19)
+	@Column(name = "create_at", nullable = true, length = 19)
 	public Date getCreateAt() {
 		return this.createAt;
 	}

@@ -14,7 +14,9 @@ public interface SchoolDao {
     
     public List<School> getSchoolByProvince(String province);
     
-    public List<School> getAcademyBySchoolName(String schoolName);
+    public List<School> getAcademyBySchoolId(int schoolId);
+    
+    public List<School> getAllSchool();
     
     public List<School> getSchoolByPage(int limit,int offset);
     

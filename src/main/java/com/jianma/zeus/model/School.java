@@ -19,9 +19,9 @@ import javax.persistence.TemporalType;
 public class School implements java.io.Serializable {
 
 	private Integer id;
+	private Integer parentId;
 	private String name;
 	private String province;
-	private String academy;
 	private String code;
 	private Date createAt;
 	private Date updateAt;
@@ -32,13 +32,11 @@ public class School implements java.io.Serializable {
 	public School(String name, String province, String academy) {
 		this.name = name;
 		this.province = province;
-		this.academy = academy;
 	}
 
-	public School(String name, String province, String academy, Date createAt, Date updateAt) {
+	public School(String name, String province, Date createAt, Date updateAt) {
 		this.name = name;
 		this.province = province;
-		this.academy = academy;
 		this.createAt = createAt;
 		this.updateAt = updateAt;
 	}
@@ -53,6 +51,15 @@ public class School implements java.io.Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	@Column(name = "parentId", nullable = false)
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
 	}
 
 	@Column(name = "name", nullable = false, length = 20)
@@ -72,16 +79,7 @@ public class School implements java.io.Serializable {
 	public void setProvince(String province) {
 		this.province = province;
 	}
-
-	@Column(name = "academy", nullable = false, length = 20)
-	public String getAcademy() {
-		return this.academy;
-	}
-
-	public void setAcademy(String academy) {
-		this.academy = academy;
-	}
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_at", nullable = true,length = 19)
 	public Date getCreateAt() {

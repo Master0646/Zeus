@@ -14,8 +14,8 @@ public interface UserDao {
 
     public void deleteUserByEmail(String email);
     
-    public void correlationRoles(Long userId, Long... roleIds);
-    public void uncorrelationRoles(Long userId, Long... roleIds);
+    public void correlationRoles(int userId, List<Integer> roleIds);
+    public void uncorrelationRoles(int userId, List<Integer> roleIds);
 
     public Optional<User> findOne(Long userId);
 
@@ -25,6 +25,8 @@ public interface UserDao {
     
     public Set<String> findRoles(String username);
 
+    public Set<Integer> findRolesIdByUserId(int userId);
+    
     public Set<String> findPermissions(String username);
     
     public void updateValidSign(String email, int validValue);
@@ -40,4 +42,6 @@ public interface UserDao {
     public List<User> findUserListByPage(int offset, int limit);
     
     public int getCountUser();
+    
+    public void deleteRolesByUserId(int userId);
 }

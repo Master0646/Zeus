@@ -27,12 +27,20 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 	private RoleMenuDao roleMenuDaoImpl;
 	
 	@Override
-	public int createRoleMenu(RoleMenu roleMenu) {
+	public int createRoleMenu(int roleId,List<Integer> menuIdList) {
 		try{
-			roleMenuDaoImpl.createRoleMenu(roleMenu);
+			RoleMenu roleMenu = null;
+			for (Integer menuId : menuIdList){
+				roleMenu = new RoleMenu();
+				roleMenu.setMenuId(menuId);
+				roleMenu.setRoleId(roleId);
+				roleMenuDaoImpl.createRoleMenu(roleMenu);
+			}
+			
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			return ResponseCodeUtil.DB_OPERATION_FAILURE;
 		}
 	}
@@ -40,7 +48,7 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 	@Override
 	public int updateRoleMenu(Long roleId, List<Integer> menuIds) {
 		try{
-			roleMenuDaoImpl.deleteRoleMenu(roleId);
+			roleMenuDaoImpl.deleteRoleMenuByRoleId(roleId);
 			RoleMenu roleMenu = null;
 			for (Integer menuId : menuIds){
 				roleMenu = new RoleMenu();
@@ -68,6 +76,17 @@ public class RoleMenuServiceImpl implements RoleMenuService {
 	public RoleMenu loadRoleMenuById(int id) {
 		
 		return roleMenuDaoImpl.loadRoleMenuById(id);
+	}
+
+	@Override
+	public int deleteRoleMenuByRoleMenuId(Long id) {
+		try{
+			roleMenuDaoImpl.deleteRoleMenuByRoleMenuId(id);
+			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
+		}
+		catch(Exception e){
+			return ResponseCodeUtil.DB_OPERATION_FAILURE;
+		}
 	}
 
 }

@@ -66,8 +66,8 @@ public class SchoolServiceImpl implements SchoolService {
 	}
 
 	@Override
-	public List<School> getAcademyBySchoolName(String schoolName) {
-		return schoolDaoImpl.getAcademyBySchoolName(schoolName);
+	public List<School> getAcademyBySchoolId(int schoolId) {
+		return schoolDaoImpl.getAcademyBySchoolId(schoolId);
 	}
 
 	@Override
@@ -81,6 +81,11 @@ public class SchoolServiceImpl implements SchoolService {
 	@Override
 	public School loadSchoolById(int id) {
 		return schoolDaoImpl.loadSchoolById(id);
+	}
+
+	@Override
+	public List<School> getAllSchool() {
+		return schoolDaoImpl.getAllSchool();
 	}
 
 }

@@ -4,6 +4,8 @@ package com.jianma.zeus.model;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -189,7 +191,7 @@ public class User implements java.io.Serializable {
 		this.slot = slot;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade= {CascadeType.ALL})
 	public Set<UserRole> getUserRoles() {
 		return this.userRoles;
 	}

@@ -1,7 +1,10 @@
 package com.jianma.zeus.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,11 +60,27 @@ public class UserController extends ZeusController {
 	
 	@RequiresRoles(value ={""})
 	@ResponseBody
+	@RequestMapping(value="/createManageUser", method = RequestMethod.POST)
+	public ResultModel createManageUser(HttpServletRequest request, HttpServletResponse response, @RequestBody User user){
+		resultModel = new ResultModel();
+		try{
+			userServiceImpl.createManageUser(user);
+			resultModel.setResultCode(200);
+			resultModel.setSuccess(true);
+			return resultModel;
+		}
+		catch(Exception e){
+			throw new ZeusException(500, "创建出错");
+		}
+	}
+	
+	@RequiresRoles(value ={""})
+	@ResponseBody
 	@RequestMapping(value="/createUser", method = RequestMethod.POST)
 	public ResultModel createUser(HttpServletRequest request, HttpServletResponse response, @RequestBody User user){
 		resultModel = new ResultModel();
 		try{
-			
+			userServiceImpl.createUser(user);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
@@ -77,7 +96,23 @@ public class UserController extends ZeusController {
 	public ResultModel updateUser(HttpServletRequest request, HttpServletResponse response, @RequestBody User user){
 		resultModel = new ResultModel();
 		try{
-			
+			userServiceImpl.updateUser(user);
+			resultModel.setResultCode(200);
+			resultModel.setSuccess(true);
+			return resultModel;
+		}
+		catch(Exception e){
+			throw new ZeusException(500, "创建出错");
+		}
+	}
+	
+	@RequiresRoles(value ={""})
+	@ResponseBody
+	@RequestMapping(value="/updateManageUser", method = RequestMethod.POST)
+	public ResultModel updateManageUser(HttpServletRequest request, HttpServletResponse response, @RequestBody User user){
+		resultModel = new ResultModel();
+		try{
+			userServiceImpl.updateManageUser(user);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
@@ -93,7 +128,7 @@ public class UserController extends ZeusController {
 	public ResultModel deleteUser(HttpServletRequest request, HttpServletResponse response, @PathVariable int id){
 		resultModel = new ResultModel();
 		try{
-			
+			userServiceImpl.deleteUser(((Integer)id).longValue());
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
@@ -110,7 +145,9 @@ public class UserController extends ZeusController {
 			@RequestParam int userId, @RequestParam String roleIds){
 		resultModel = new ResultModel();
 		try{
-			
+			int[] a = Arrays.stream(roleIds.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+			List<Integer> roleIdList = Arrays.stream(a).boxed().collect(Collectors.toList());
+			userServiceImpl.correlationRoles(userId, roleIdList);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
@@ -127,7 +164,9 @@ public class UserController extends ZeusController {
 			@RequestParam int userId, @RequestParam String roleIds){
 		resultModel = new ResultModel();
 		try{
-			
+			int[] a = Arrays.stream(roleIds.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+			List<Integer> roleIdList = Arrays.stream(a).boxed().collect(Collectors.toList());
+			userServiceImpl.uncorrelationRoles(userId, roleIdList);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
 			return resultModel;
@@ -172,11 +211,29 @@ public class UserController extends ZeusController {
 		}
 	}
 
+	
 	@RequiresRoles(value ={""})
 	@ResponseBody
-	@RequestMapping(value="/findRoles", method = RequestMethod.GET)
+	@RequestMapping(value="/findRolesByUserId", method = RequestMethod.GET)
+	public ResultModel findRolesByUserId(HttpServletRequest request, HttpServletResponse response, 
+			@RequestParam int id){
+		resultModel = new ResultModel();
+		try{
+			resultModel.setObject(userServiceImpl.findRolesIdByUserId(id));
+			resultModel.setResultCode(200);
+			resultModel.setSuccess(true);
+			return resultModel;
+		}
+		catch(Exception e){
+			throw new ZeusException(500, "创建出错");
+		}
+	}
+	
+	@RequiresRoles(value ={""})
+	@ResponseBody
+	@RequestMapping(value="/findRolesByEmail", method = RequestMethod.GET)
 	public ResultModel findRoles(HttpServletRequest request, HttpServletResponse response, 
-			@RequestParam int userId, @RequestParam String email){
+			@RequestParam String email){
 		resultModel = new ResultModel();
 		try{
 			resultModel.setObject(userServiceImpl.findRoles(email));

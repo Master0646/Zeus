@@ -9,9 +9,11 @@ public interface RoleMenuDao {
 
 	public void createRoleMenu(RoleMenu roleMenu);
 	    
-    public void deleteRoleMenu(Long roleId);
+    public void deleteRoleMenuByRoleId(Long roleId);
     
     public List<Menu> getMenuListByRoleId(List<Integer> roleIds);
     
     public RoleMenu loadRoleMenuById(int id);
+    
+    public void deleteRoleMenuByRoleMenuId(Long id);
 }

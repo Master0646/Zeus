@@ -15,9 +15,11 @@ public interface SchoolService {
     
     public List<School> getSchoolByProvince(String province);
     
-    public List<School> getAcademyBySchoolName(String schoolName);
+    public List<School> getAcademyBySchoolId(int schoolId);
     
     public PageModel getSchoolByPage(int limit,int offset);
     
     public School loadSchoolById(int id);
+    
+    public List<School> getAllSchool();
 }

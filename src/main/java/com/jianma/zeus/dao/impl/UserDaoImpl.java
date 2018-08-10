@@ -37,12 +37,18 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public void updateUser(User user) {
 		Session session = sessionFactory.getCurrentSession();
-		String sql = " update user u set u.realname = ?, u.mobile = ?, u.address = ? where u.email = ? ";
+		String sql = " update user u set u.realname = ?, u.mobile = ?, u.address = ?, u.email = ?, "
+				+ " u.school = ?, u.academy = ?, u.nickname = ?,u.password = ? where u.id = ? ";
 		Query query = session.createSQLQuery(sql);
 		query.setParameter(0, user.getRealname());
 		query.setParameter(1, user.getMobile());
 		query.setParameter(2, user.getAddress());
 		query.setParameter(3, user.getEmail());
+		query.setParameter(4, user.getSchool());
+		query.setParameter(5, user.getAcademy());
+		query.setParameter(6, user.getNickname());
+		query.setParameter(7, user.getPassword());
+		query.setParameter(8, user.getId());
 		query.executeUpdate();
 	}
 
@@ -50,7 +56,7 @@ public class UserDaoImpl implements UserDao {
 	public void deleteUser(Long userId) {
 
 		Session session = sessionFactory.getCurrentSession();
-		String sql = " update user u set u.valid = 1 where u.id = ?";
+		String sql = " update user u set u.valid = 0 where u.id = ?";
 		Query query = session.createSQLQuery(sql);
 		query.setParameter(0, userId);
 		query.executeUpdate();
@@ -58,12 +64,12 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public void correlationRoles(Long userId, Long... roleIds) {
+	public void correlationRoles(int userId, List<Integer> roleIds) {
 		Session session = sessionFactory.getCurrentSession();
 		User user = new User();
-		user.setId(userId.intValue());
+		user.setId(userId);
 
-		for (Long roleId : roleIds) {
+		for (Integer roleId : roleIds) {
 			UserRole userRole = new UserRole();
 			Role role = new Role();
 			role.setId(roleId.intValue());
@@ -74,12 +80,12 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public void uncorrelationRoles(Long userId, Long... roleIds) {
+	public void uncorrelationRoles(int userId, List<Integer> roleIds) {
 		Session session = sessionFactory.getCurrentSession();
 		User user = new User();
-		user.setId(userId.intValue());
+		user.setId(userId);
 
-		for (Long roleId : roleIds) {
+		for (Integer roleId : roleIds) {
 			UserRole userRole = new UserRole();
 			Role role = new Role();
 			role.setId(roleId.intValue());
@@ -91,7 +97,7 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public Optional<User> findOne(Long userId) {
-		User user = (User) sessionFactory.getCurrentSession().load(User.class, userId);
+		User user = (User) sessionFactory.getCurrentSession().load(User.class, userId.intValue());
 		return Optional.ofNullable(user);
 	}
 
@@ -210,7 +216,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> findUserListByPage(int offset, int limit) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql  = "select email,realname,mobile,address,valid, id from User order by createtime desc";
+		String hql  = "select email,realname,mobile,address,valid, id from User where valid = 1 order by createtime desc";
 		Query query = session.createQuery(hql);
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
@@ -244,7 +250,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public int getCountUser() {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " select count(u) from User u  ";
+		String hql = " select count(u) from User u where u.valid = 1 ";
 		Query query = session.createQuery(hql);
         return (int)((Long)query.uniqueResult()).longValue();
 	}
@@ -266,6 +272,26 @@ public class UserDaoImpl implements UserDao {
 		String sql = " delete from User u where u.email = ? ";
 		Query query = session.createQuery(sql);
 		query.setParameter(0, email);
+		query.executeUpdate();
+	}
+
+	@Override
+	public Set<Integer> findRolesIdByUserId(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select roleId from user_role ur where ur.userId = ? ";
+		Query query = session.createSQLQuery(sql);
+		query.setParameter(0, userId);
+		Set<Integer> set=new HashSet<Integer>();
+		set.addAll(query.list());
+		return set;
+	}
+
+	@Override
+	public void deleteRolesByUserId(int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String sql = " delete from user_role  where  userId = ? ";
+		Query query = session.createSQLQuery(sql);
+		query.setParameter(0, userId);
 		query.executeUpdate();
 	}
 

@@ -2,6 +2,7 @@ package com.jianma.zeus.controller;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,9 +59,13 @@ public class RoleMenuController extends ZeusController{
 	@ResponseBody
 	@RequestMapping(value = "/createRoleMenu", method = RequestMethod.POST)
 	public ResultModel createRoleMenu(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody RoleMenu RoleMenu) {
+			@RequestBody(required=true) Map<String,Object> map) {
 		resultModel = new ResultModel();
-		int result = roleMenuServiceImpl.createRoleMenu(RoleMenu);
+		int roleId = Integer.parseInt(map.get("roleId").toString());
+		String menuIds = map.get("menuIds").toString();
+		int[] a = Arrays.stream(menuIds.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
+		List<Integer> menuIdList = Arrays.stream(a).boxed().collect(Collectors.toList());
+		int result = roleMenuServiceImpl.createRoleMenu(roleId,menuIdList);
 		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
@@ -75,11 +80,31 @@ public class RoleMenuController extends ZeusController{
 	@ResponseBody
 	@RequestMapping(value = "/updateRoleMenu", method = RequestMethod.POST)
 	public ResultModel updateRoleMenu(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam int roleId, @RequestParam String menuIds) {
+			@RequestBody(required=true) Map<String,Object> map) {
 		resultModel = new ResultModel();
+		int roleId = Integer.parseInt(map.get("roleId").toString());
+		String menuIds = map.get("menuIds").toString();
 		int[] a = Arrays.stream(menuIds.split(",")).mapToInt(s -> Integer.parseInt(s)).toArray();
 		List<Integer> menuIdList = Arrays.stream(a).boxed().collect(Collectors.toList());
 		int result = roleMenuServiceImpl.updateRoleMenu((long)roleId,menuIdList);
+		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
+			resultModel.setResultCode(200);
+			resultModel.setSuccess(true);
+			return resultModel;
+		}
+		else{
+			throw new ZeusException(500, "更新出错");
+		}
+	}
+	
+	@RequiresRoles(value = { "" })
+	@ResponseBody
+	@RequestMapping(value = "/deleteRoleMenuByRoleMenuId/{id}", method = RequestMethod.POST)
+	public ResultModel deleteRoleMenuByRoleMenuId(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable int id) {
+		resultModel = new ResultModel();
+		
+		int result = roleMenuServiceImpl.deleteRoleMenuByRoleMenuId(((Integer)id).longValue());
 		if (result == ResponseCodeUtil.DB_OPERATION_SUCCESS){
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);

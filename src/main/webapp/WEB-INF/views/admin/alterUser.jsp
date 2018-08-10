@@ -10,7 +10,10 @@
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/lib/iview.css">
 	<link rel="stylesheet" type="text/css" href="resources/backend/css/src/main.css">
 	<link rel="stylesheet" type="text/css" href="resources/css/lib/bootstrap.min.css">
-	
+	<script>
+		var email = "${user.email}",realname = "${user.realname}",nickname = "${user.nickname}",
+			mobile = "${user.mobile}",school = "${user.school}",academy = "${user.academy}",address = "${user.address}";
+	</script>
 	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
 	<script src="resources/js/lib/bootstrap.min.js" charset="utf-8"></script>
     <script src="resources/backend/js/lib/vue.min.js" charset="utf-8"></script>
@@ -25,13 +28,14 @@
 	<div class="right">
 		<div class="alterUser" style="margin: 20px 20px;" v-cloak>
 			<breadcrumb>
+		        <breadcrumb-item to="user/userManage">新建/修改用户</breadcrumb-item>
 		        <breadcrumb-item>新建/修改用户</breadcrumb-item>
 		    </breadcrumb><br />
 	     	<div>
 				<i-form :model="dataSourse" :label-width="180" style="width:80%;">
 		            <form-item label="角色">
-		                <i-select v-model="dataSourse.userRoles.role" style="width:200px" @on-change="groupCheck">
-		     				<i-option v-for="Groupitem in GroupList" :value="Groupitem.value" :key="Groupitem.value" >{{ Groupitem.label }}</i-option>
+		                <i-select v-model="dataSourse.userRoles[0].role.id" style="width:200px" @on-change="groupCheck">
+		     				<i-option v-for="roleItem in roleList" :value="roleItem.id" :key="roleItem.id" >{{ roleItem.rolename }}</i-option>
 		     			</i-select>
 			        </form-item>
 			        <form-item label="账号">
@@ -50,7 +54,9 @@
 			        	<i-input v-model="dataSourse.mobile" placeholder="请输入手机号"></i-input>
 			    	</form-item>
 			        <form-item label="学校名称">
-			            <i-input v-model="dataSourse.school" placeholder="请输入学校名"></i-input>
+			            <i-select v-model="dataSourse.school" style="width:200px" @on-change="schoolCheck">
+		     				<i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
+		     			</i-select>
 			        </form-item>
 			        <form-item label="系部名称">
 			            <i-input v-model="dataSourse.academy" placeholder="请输入系部名"></i-input>
@@ -73,7 +79,6 @@
                 return{
                     //需要提交的数据
                     dataSourse:{
-                    	headPortrait: "",
                     	id:"",
                     	email:"",		//账号
                     	password:"",	//密码
@@ -83,16 +88,21 @@
                         school:"",
                     	academy:"",
                     	address:"",
-                    	userRoles:[{role:""},{user:1}]
+                    	/* headPortrait:"", */
+                    	userRoles:[
+              	           {role:{id:""}}
+              	        ],
+                    	schoolCode:""
                     },
-                    GroupList:[{value:"0",label:"权限1"},{value:"1",label:"权限2"},{value:"2",label:"权限3"}],
+                    schoolList:[],
+                    roleList:[],
                     redirectUrl:config.viewUrls.userManage,
                     submitUrl:""
                 }
             },
             methods:{
                 submit:function(){
-                    var that = this;
+                   	var that = this;
                 	this.$Loading.start();
 					$.ajax({
             	        url:this.submitUrl,
@@ -105,7 +115,7 @@
                             	that.$Loading.finish();
             	            	if(that.redirectUrl){
             	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
-	           	                    setTimeout(function(){
+            	                	setTimeout(function(){
 	               	                    window.location.href=that.redirectUrl;
 	           	                    },3000);
             	            	}
@@ -120,21 +130,97 @@
             	    });
                 },
                 groupCheck:function(index){
-                    this.dataSourse.userRoles[0].role = this.GroupList[index].value;
+                    this.dataSourse.userRoles[0].role.id = this.roleList[index-1].id;
+                },
+                schoolCheck:function(index){
+                	console.log(this.schoolList[index-1].id,index);
                 }
             },
             created:function(){
-            	/* var that = this;
-				var	userId = window.location.pathname.split("/Zeus/user/alterUser/")[1];	//获取课程id
+            	var that = this;
+				//获取学校数据
+				$.ajax({
+          	        url:config.ajaxUrls.getSchoolByPage,
+          	        type:"get",
+          	        data:{limit:1000,offset:0},
+          	        success:function(res){
+          	            if(res.success){
+        					that.schoolList = res.object.list;
+        					console.log(res);
+          	            }else{
+          	            	that.$Notice.error({title:res.message});
+          	            }
+          	        }
+          	    });
+				//判断新建、修改
+				var	userId = window.location.pathname.split("/Zeus/user/alterUser/")[1];	//获取用户id
 				if(userId != 0){
-   	            	that.dataSourse.id = userId;
-   	            	that.dataSourse.name = name;
-   	            	that.dataSourse.remark = remark;
-					this.submitUrl = config.ajaxUrls.updateUser; 
+					this.submitUrl = config.ajaxUrls.updateManageUser;
+					$.ajax({
+	          	        url:config.ajaxUrls.getAllRoles,
+	          	        type:"get",
+	          	        dataType:"json",
+	          	        contentType :"application/json; charset=UTF-8",
+	          	        success:function(res){
+	          	            if(res.success){
+	          	            	//角色数据筛选
+	          	            	that.roleList = res.object;
+	          	            	
+	          	            	$.ajax({
+	        	          	        url:config.ajaxUrls.findRolesByUserId,
+	        	          	        type:"get",
+	        	          	        data:{id:userId},
+	        	          	        success:function(res){
+	        	          	            if(res.success){
+	        	        					that.dataSourse.userRoles[0].role.id = res.object[0];
+	        	        					that.dataSourse.id = userId;
+	        	        					that.dataSourse.email = email;
+	        	        					that.dataSourse.realname = realname;
+	        	        					that.dataSourse.nickname = nickname;
+	        	        					that.dataSourse.mobile = mobile;
+	        	        					that.dataSourse.school = school;
+	        	        					that.dataSourse.academy = academy;
+	        	        					that.dataSourse.address = address;
+	        	          	            }else{
+	        	          	            	that.$Notice.error({title:res.message});
+	        	          	            }
+	        	          	        },
+	        	          	        error:function(err){
+	        	                      	that.$Loading.error();
+	        	          	        	that.$Notice.error({title:config.messages.loadDataError});
+	        	          	        }
+	        	          	    });
+	          	            }else{
+	          	            	that.$Notice.error({title:res.message});
+	          	            }
+	          	        },
+	          	        error:function(err){
+	                      	that.$Loading.error();
+	          	        	that.$Notice.error({title:config.messages.loadDataError});
+	          	        }
+	          	    });
 				}else{
-					this.submitUrl = config.ajaxUrls.createUser;
-				} */
-				this.submitUrl = config.ajaxUrls.createUser;
+					this.submitUrl = config.ajaxUrls.createManageUser;
+					$.ajax({
+	          	        url:config.ajaxUrls.getAllRoles,
+	          	        type:"get",
+	          	        dataType:"json",
+	          	        contentType :"application/json; charset=UTF-8",
+	          	        success:function(res){
+	          	            if(res.success){
+	          	            	//角色数据筛选
+	          	            	that.roleList = res.object;
+	          	            	console.log(that.roleList);
+	          	            }else{
+	          	            	that.$Notice.error({title:res.message});
+	          	            }
+	          	        },
+	          	        error:function(err){
+	                      	that.$Loading.error();
+	          	        	that.$Notice.error({title:config.messages.loadDataError});
+	          	        }
+	          	    });
+				}
             }
         })
     </script>

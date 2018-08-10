@@ -40,7 +40,6 @@
 			<i-button type="primary" @click="createCurriculum">
 			<Icon type="plus"></Icon> 新建</i-button>
 			<i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
-			<page v-model="totalPage" :current="1" :total="totalPage" @on-change="pageChange" show-total style="margin-right:60px;margin-top:20px;text-align:right;"></page>
 		</div>
 	</div>
 	<script>
@@ -52,28 +51,13 @@
                  	index:"",
                 	deleteModal: false,
                 	roleMenuTitle:"",
-               	 	totalPage:"",
                	   	columns:[
                      	{ title: 'ID',key: 'id', align: 'center'},
-                      	{ title: '角色',key: 'roleId', align: 'center'},
-                      	{ title: '菜单',key: 'menuId', align: 'center'},
+                      	{ title: '角色',key: 'roleName', align: 'center'},
+                      	{ title: '菜单',key: 'name', align: 'center'},
                       	{ title: '操作',key: 'opt', align: 'center',
                   	   	render: (h, params) => {
                              return h('div', [
-                             	h('Button', {
-                                     props: {
-                                         type: 'primary',
-                                         size: 'small'
-                                     },
-                                     style: {
-                                         marginRight: '5px'
-                                     },
-                                     on: {
-                                         click: () => {
-                                             this.change(params.index)
-                                         }
-                                     }
-                                 }, '修改'),
                                  h('Button', {
                                      props: {
                                          type: 'error',
@@ -94,20 +78,51 @@
           },
           methods: {
               ok: function () {
-			
+            	  var id = this.dataList[this.index].id;
+              	var that = this;
+              	this.$Loading.start();
+              	$.ajax({
+                      "dataType":'json',
+                      "type":"POST",
+                      "data":{id:id},
+                      "url":config.ajaxUrls.deleteRoleMenu.replace(":id",id),
+                      "success": function (res) {
+                          if(res.success===false){
+                          	that.$Notice.error({title:res.message});
+                          }else{
+                          	that.$Notice.success({title:config.messages.optSuccess});
+                          	$.ajax({
+            			        url:config.ajaxUrls.getRoleMenuList,
+            			        type:"get",
+            			        dataType:"json",
+            			        data:{roleIds:"1,2,3,4"},
+            			        contentType :"application/json; charset=UTF-8",	
+            			        success:function(res){
+            			            if(res.success){
+            	                    	that.$Loading.finish();
+            							that.dataList = res.object;
+            			            }else{
+            			            	that.$Notice.error({title:res.message});
+            			            }
+            			        },
+            			        error:function(){
+            	                	that.$Loading.error();
+            			        	that.$Notice.error({title:config.messages.loadDataError});
+            			        }
+            			    });
+                          }
+                      }
+                  });
               },
               //新建课程
               createCurriculum:function(){
                   window.location.href="roleMenu/alterRoleMenu/0";
               },
-              change:function(index){
-                  console.log("changechange:",index);
-              },
               remove:function(index) {
                   console.log("removeremove:",index);
-              },
-              pageChange:function(index){
-            	  
+                  this.roleMenuTitle = this.dataList[index].name;
+                  this.deleteModal = true;
+                  this.index = index;
               }
           },
           created:function(){
@@ -115,9 +130,9 @@
       	    	var that = this;
 			   	$.ajax({
 			        url:config.ajaxUrls.getRoleMenuList,
-			        type:"GET",
+			        type:"get",
 			        dataType:"json",
-			        data:{roleIds:0},
+			        data:{roleIds:"1,2,3,4"},
 			        contentType :"application/json; charset=UTF-8",	
 			        success:function(res){
 			            if(res.success){

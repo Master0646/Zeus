@@ -1,5 +1,7 @@
 package com.jianma.zeus.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService {
 			if (optUser.isPresent()) {
 				return ResponseCodeUtil.UESR_CREATE_EXIST;
 			} else {
+				user.setValid((byte)1);
 				PasswordHelper.encryptAppPassword(user);
 				Set<UserRole> userRoles = new HashSet<>();
 				UserRole userRole = new UserRole();
@@ -50,6 +53,7 @@ public class UserServiceImpl implements UserService {
 				userRole.setRole(role);
 				userRoles.add(userRole);
 				user.setUserRoles(userRoles);
+				user.setCreatetime(new Date());
 				userDaoImpl.createUser(user);
 
 				return ResponseCodeUtil.UESR_OPERATION_SUCESS;
@@ -58,12 +62,12 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 			return ResponseCodeUtil.UESR_OPERATION_FAILURE;
 		}
-
 	}
 
 	@Override
 	public int updateUser(User user) {
 		try {
+			PasswordHelper.encryptAppPassword(user);
 			userDaoImpl.updateUser(user);
 			return ResponseCodeUtil.UESR_OPERATION_SUCESS;
 		} catch (Exception e) {
@@ -83,7 +87,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int correlationRoles(Long userId, Long... roleIds) {
+	public int correlationRoles(int userId, List<Integer> roleIds) {
 		try {
 			userDaoImpl.correlationRoles(userId, roleIds);
 			return ResponseCodeUtil.UESR_OPERATION_SUCESS;
@@ -94,7 +98,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public int uncorrelationRoles(Long userId, Long... roleIds) {
+	public int uncorrelationRoles(int userId, List<Integer> roleIds) {
 		try {
 			userDaoImpl.uncorrelationRoles(userId, roleIds);
 			return ResponseCodeUtil.UESR_OPERATION_SUCESS;
@@ -185,6 +189,57 @@ public class UserServiceImpl implements UserService {
 	public int updateValidSign(String email, int validValue) {
 		try {
 			userDaoImpl.updateValidSign(email, validValue);
+			return ResponseCodeUtil.UESR_OPERATION_SUCESS;
+		} catch (Exception e) {
+			return ResponseCodeUtil.UESR_OPERATION_FAILURE;
+		}
+	}
+
+	@Override
+	public int createManageUser(User user) {
+		try {
+			Optional<User> optUser = userDaoImpl.findByEmail(user.getEmail());
+
+			if (optUser.isPresent()) {
+				return ResponseCodeUtil.UESR_CREATE_EXIST;
+			} else {
+				user.setValid((byte)1);
+				PasswordHelper.encryptAppPassword(user);
+				user.setCreatetime(new Date());
+				Set<UserRole> set = user.getUserRoles();
+				for (UserRole ur : set){
+					ur.setUser(user);
+				}
+				userDaoImpl.createUser(user);
+
+				return ResponseCodeUtil.UESR_OPERATION_SUCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseCodeUtil.UESR_OPERATION_FAILURE;
+		}
+	}
+
+	@Override
+	public Set<Integer> findRolesIdByUserId(int userId) {
+		return userDaoImpl.findRolesIdByUserId(userId);
+	}
+
+	@Override
+	public int updateManageUser(User user) {
+		try {
+			PasswordHelper.encryptAppPassword(user);
+			userDaoImpl.updateUser(user);
+			Set<UserRole> userRoles = user.getUserRoles();
+			List<Integer> roleIds = new ArrayList<>();
+			for (UserRole userRole : userRoles){
+				roleIds.add(userRole.getRole().getId());
+			}
+			userDaoImpl.deleteRolesByUserId(user.getId());
+			if (roleIds.size() > 0){
+				userDaoImpl.correlationRoles(user.getId(), roleIds);
+			}
+			
 			return ResponseCodeUtil.UESR_OPERATION_SUCESS;
 		} catch (Exception e) {
 			return ResponseCodeUtil.UESR_OPERATION_FAILURE;

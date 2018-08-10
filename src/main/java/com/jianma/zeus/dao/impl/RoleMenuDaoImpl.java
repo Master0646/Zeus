@@ -31,19 +31,19 @@ public class RoleMenuDaoImpl implements RoleMenuDao {
 	}
 
 	@Override
-	public void deleteRoleMenu(Long roleId) {
+	public void deleteRoleMenuByRoleId(Long roleId) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " delete RoleMenu m  where m.roleId = ? ";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, roleId);
+		query.setParameter(0, roleId.intValue());
 		query.executeUpdate();
 	}
 
 	@Override
 	public List<Menu> getMenuListByRoleId(List<Integer> roleIds) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " select m.name,m.url from RoleMenu rm, Menu m "
-				+ " where m.id = rm.menuId and rm.roleId in (:roleId)";
+		String hql = " select m.name,m.url,rm.id,r.rolename,rm.roleId,rm.menuId from Role r,RoleMenu rm, Menu m "
+				+ " where m.id = rm.menuId and rm.roleId = r.id and rm.roleId in (:roleId)";
 		Query query = session.createQuery(hql);
 		query.setParameterList("roleId", roleIds);
 		List list = query.list();
@@ -56,10 +56,16 @@ public class RoleMenuDaoImpl implements RoleMenuDao {
           
             String name = (String)o[0];
             String url = (String)o[1];
-            
+            int id = ((Number)o[2]).intValue();
+            String roleName = (String)o[3];
+            int menuId = ((Number)o[4]).intValue();
+            int roleId = ((Number)o[5]).intValue();
             menu.setName(name);
             menu.setUrl(url);
-            
+            menu.setId(id);
+            menu.setRoleName(roleName);
+            menu.setMenuId(menuId);
+            menu.setRoleId(roleId);
             mList.add(menu);
         }
         return mList;
@@ -69,6 +75,15 @@ public class RoleMenuDaoImpl implements RoleMenuDao {
 	public RoleMenu loadRoleMenuById(int id) {
 		Session session = sessionFactory.getCurrentSession();
 		return (RoleMenu)session.get(RoleMenu.class, id);
+	}
+
+	@Override
+	public void deleteRoleMenuByRoleMenuId(Long id) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " delete RoleMenu m  where m.id = ? ";
+		Query query = session.createQuery(hql);
+		query.setParameter(0, id.intValue());
+		query.executeUpdate();
 	}
 
 }

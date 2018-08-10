@@ -135,11 +135,11 @@ public class SchoolController extends ZeusController {
 	  
 	@RequiresRoles(value ={""})
 	@ResponseBody
-	@RequestMapping(value="/getAcademyBySchoolName", method = RequestMethod.GET)
-	public ResultModel getAcademyBySchoolName(HttpServletRequest request, HttpServletResponse response, @RequestParam String schoolName){
+	@RequestMapping(value="/getAcademyBySchoolId", method = RequestMethod.GET)
+	public ResultModel getAcademyBySchoolId(HttpServletRequest request, HttpServletResponse response, @RequestParam int schoolId){
 		resultModel = new ResultModel();
 		try{
-			List<School> list = schoolServiceImpl.getAcademyBySchoolName(schoolName);
+			List<School> list = schoolServiceImpl.getAcademyBySchoolId(schoolId);
 			resultModel.setObject(list);
 			resultModel.setResultCode(200);
 			resultModel.setSuccess(true);
@@ -150,6 +150,23 @@ public class SchoolController extends ZeusController {
 		}
 	}
 
+	@RequiresRoles(value ={""})
+	@ResponseBody
+	@RequestMapping(value="/getAllSchool", method = RequestMethod.GET)
+	public ResultModel getAllSchool(HttpServletRequest request, HttpServletResponse response){
+		resultModel = new ResultModel();
+		try{
+			List<School> list = schoolServiceImpl.getAllSchool();
+			resultModel.setObject(list);
+			resultModel.setResultCode(200);
+			resultModel.setSuccess(true);
+			return resultModel;
+		}
+		catch(Exception e){
+			throw new ZeusException(500, "获取数据出错");
+		}
+	}
+	
 	@RequiresRoles(value ={""})
 	@ResponseBody
 	@RequestMapping(value="/getSchoolByPage", method = RequestMethod.GET)

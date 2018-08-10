@@ -25,6 +25,7 @@
 	<div class="right">
 		<div class="alterRoleMenu" style="margin: 20px 20px;" v-cloak>
 	        <breadcrumb>
+		        <breadcrumb-item to="roleMenu/roleMenuManage">角色-菜单管理</breadcrumb-item>
 		        <breadcrumb-item>新建/修改菜单</breadcrumb-item>
 		    </breadcrumb><br />
 	         <div>
@@ -54,9 +55,8 @@
             	 return{
                      //需要提交的数据
                      dataSourse:{
-                     	 id:"",
-                         menuId:"",
-                         roleId:""
+                    	 menuIds:"",
+                    	 roleId:""
                      },
                      roleArr:[],
                      roleList: [],	//存放角色
@@ -69,19 +69,17 @@
                      console.log("value",value);
                  },
                  checkboxChange:function(array){
-                     /* this.dataSourse.menuId = array.toString(); */
-                     this.dataSourse.menuId = array[0];
+                     this.dataSourse.menuIds = array.toString();
                  },
                  submit:function(){
-                	 console.log("submit",this.dataSourse);
-                	 this.$Loading.start();
+                	this.$Loading.start();
                  	var that = this;
  					$.ajax({
              	        url:this.submitUrl,
              	        type:"post",
              	        dataType:"json",
              	        contentType :"application/json; charset=UTF-8",
-             	        data:JSON.stringify(that.dataSourse),
+             	        data:JSON.stringify(this.dataSourse),
              	        success:function(res){
              	            if(res.success){
              	            	that.$Loading.finish();
@@ -99,7 +97,7 @@
                          	that.$Loading.error();
              	        	that.$Notice.error({title:config.messages.loadDataError});
              	        }
-             	    });
+             	    }); 
                  }
              },
              created:function(){
@@ -124,7 +122,6 @@
           	        contentType :"application/json; charset=UTF-8",
           	        success:function(res){
           	            if(res.success){
-           	            	console.log("res",res);
           	            	//角色数据筛选
           	            	that.roleList = res.object;
           	            	var dataArr = res.object;
@@ -149,7 +146,6 @@
            	        contentType :"application/json; charset=UTF-8",
            	        success:function(res){
            	            if(res.success){
-           	            	console.log(res);
            	            	that.menuList = res.object;
            	            }else{
            	            	that.$Notice.error({title:res.message});

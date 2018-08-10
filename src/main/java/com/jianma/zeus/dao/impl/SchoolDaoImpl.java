@@ -30,12 +30,11 @@ public class SchoolDaoImpl implements SchoolDao {
 	@Override
 	public void updateSchool(School school) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " update from School s set s.name = ?, s.province = ?, s.academy = ? where s.id = ?";
+		String hql = " update from School s set s.name = ?, s.province = ? where s.id = ?";
 		Query query = session.createQuery(hql);
 		query.setParameter(0, school.getName());
 		query.setParameter(1, school.getProvince());
-		query.setParameter(2, school.getAcademy());
-		query.setParameter(3, school.getId());
+		query.setParameter(2, school.getId());
 		query.executeUpdate();
 	}
 
@@ -51,18 +50,18 @@ public class SchoolDaoImpl implements SchoolDao {
 	@Override
 	public List<School> getSchoolByProvince(String province) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " from School s where s.province = ? ";
+		String hql = " from School s where s.province = ? and parentId = 0";
 		Query query = session.createQuery(hql);
 		query.setParameter(0, province);
 		return query.list();
 	}
 
 	@Override
-	public List<School> getAcademyBySchoolName(String schoolName) {
+	public List<School> getAcademyBySchoolId(int schoolId) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = " from School s where s.name = ? ";
+		String hql = " from School s where s.parentId = ? ";
 		Query query = session.createQuery(hql);
-		query.setParameter(0, schoolName);
+		query.setParameter(0, schoolId);
 		return query.list();
 	}
 
@@ -88,6 +87,14 @@ public class SchoolDaoImpl implements SchoolDao {
 	public School loadSchoolById(int id) {
 		Session session = sessionFactory.getCurrentSession();
 		return (School)session.get(School.class, id);
+	}
+
+	@Override
+	public List<School> getAllSchool() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " from School s where parentId = 0 order by createAt desc ";
+		Query query = session.createQuery(hql);
+		return query.list();
 	}
 
 }
