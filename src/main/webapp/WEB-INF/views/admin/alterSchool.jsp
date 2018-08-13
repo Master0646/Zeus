@@ -14,8 +14,7 @@
 	
 	<script>
 		var province = '${school.province}',
-			name = '${school.name}',
-			academy = '${school.academy}';
+			name = '${school.name}';
 	</script>
 	
 	<script src="resources/js/lib/jquery-1.10.2.min.js"></script>
@@ -48,7 +47,7 @@
 		     			</i-select>
 					</form-item> 
 					<form-item label="学校名称"> 
-						<i-input v-model="dataSourse.name" placeholder="请输入学校名"></i-input>
+						<i-input v-model="dataSourse.name" :disabled="disableModel" placeholder="请输入学校名"></i-input>
 					</form-item> 
 					<form-item> 
 						<i-button type="primary" v-on:click="submitSchool" :disabled="schoolDisable" long>确定</i-button> 
@@ -66,12 +65,13 @@
 							<i-select v-model="dataSourse.parentId" style="width:200px" @on-change="schoolCheck">
 			     				<i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
 			     			</i-select>
+							<span v-if="showText" style="color:red;">请重新选择学校</span>
 						</form-item> 
 						<form-item label="学院名称">
 							<i-input v-model="academy" placeholder="请输入学院名"></i-input>
 						</form-item> 
 						<form-item> 
-							<i-button type="primary" v-on:click="submitAcademy" long>确定</i-button> 
+							<i-button type="primary" v-on:click="submitAcademy" :disabled="academyDisable" long>确定</i-button> 
 						</form-item> 
 					</i-form>
 				</div>
@@ -91,12 +91,16 @@
 						province : "",
 						name : ""
 					},
+					showText:false,
 					showAcademy:false,
-					academy:"",
+					academy:"",			//记录学院
 					schoolDisable:false,
-					province:"",
-					schoolList:[],
-					provinceList:[],
+					academyDisable:true,
+					nullData:{id:"0",name:"无选项"},
+					province:"",		//记录省份
+					schoolList:[],		//院校数据
+					provinceList:[],	//省份数据
+					disableModel:false,
                     redirectUrl:config.viewUrls.schoolManage,
                     submitUrl:""
 				}
@@ -104,9 +108,41 @@
 			methods : {
 				submitSchool : function() {
 					var that = this;
+                	this.province = this.dataSourse.province;
                 	this.$Loading.start();
-                	
                 	//学校部分提交
+                	$.ajax({
+            	        url:this.submitUrl,
+            	        type:"post",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        data:JSON.stringify(that.dataSourse),
+            	        success:function(res){
+            	        	//按省份请求学校，刷新下拉框数据
+            	        	$.ajax({
+        	           	        url:config.ajaxUrls.getSchoolByProvince,
+        	           	        type:"get",
+        	           	        data:{province:that.province},
+        	           	        success:function(res){
+                                	that.$Loading.finish();
+        	           	        	that.$Notice.success({title:"新建学校成功，请新建学院或系部"});
+   									that.schoolList = res.object;
+   									that.schoolList.push({id:"0",name:"无选项"});
+                                	that.showText = true;
+   									that.schoolDisable = true;
+   									that.academyDisable = false;
+        	           	        }
+        	           	    });
+            	        	
+           	        	}
+           	        })
+				},
+				//学院提交
+				submitAcademy:function(){
+					var that = this;
+					this.dataSourse.parentId = this.parentId;
+					this.dataSourse.name = this.academy;
+                	this.$Loading.start();
 					$.ajax({
             	        url:this.submitUrl,
             	        type:"post",
@@ -114,50 +150,30 @@
             	        contentType :"application/json; charset=UTF-8",
             	        data:JSON.stringify(that.dataSourse),
             	        success:function(res){
-            	            if(res.success){
-            	            	//学院部分提交
-                            	that.$Loading.finish();
-            	            	if(that.redirectUrl){
-            	                	that.$Notice.success({title:"新建学校成功，请新建学院或系部"});
-            	                	that.showAcademy = true;
-            	                	that.province = that.dataSourse.province;
-            	                	$.ajax({
-            		           	        url:config.ajaxUrls.getSchoolByProvince,
-            		           	        type:"get",
-            		           	        data:{province:that.province},
-            		           	        success:function(res){
-            		           	            if(res.success){
-            		           	            	that.schoolList = res.object;
-            									that.schoolList.push({id:"0",name:"无选项"});
-            									that.schoolDisable = true;
-            		           	            }else{
-            		           	            	that.$Notice.error({title:res.message});
-            		           	            }
-            		           	        }
-            		           	    });
-            	            	}
-            	            }else{
-            	            	that.$Notice.error({title:res.message});
-            	            }
-            	        },
-            	        error:function(err){
-                        	that.$Loading.error();
-            	        	that.$Notice.error({title:config.messages.loadDataError});
-            	        }
-            	    });
-				},
-				submitAcademy:function(){
-					console.log("parentId",this.parentId);
+                        	that.$Loading.finish();
+							if(that.redirectUrl){
+        	                	that.$Notice.success({title:that.successMessage?that.successMessage:config.messages.optSuccRedirect});
+        	                	setTimeout(function(){
+               	                    window.location.href=that.redirectUrl;
+           	                    },3000);
+        	            	}
+           	        	}
+           	        })
 				},
 				schoolCheck:function(index){
 					if(index == 0){
 						this.disableModel = false;
+						this.schoolDisable = false;
+						this.academyDisable = true;
 						this.parentId = 0;
+						this.showAcademy = true;
 					}else{
 						this.disableModel = true;
+						this.schoolDisable = true;
+						this.academyDisable = false;
 						this.parentId = index;
+						this.showAcademy = true;
 					}
-					console.log("parentId",this.parentId);
 				},
 				//省份选择
 				provinceCheck:function(index){
@@ -189,15 +205,11 @@
 				var that = this;
 				this.provinceList = config.provinceList;
 				//获取学校数据
-				
-				
-				
 				var	schoolId = window.location.pathname.split("/Zeus/school/alterSchool/")[1];	//获取院校id
 				if(schoolId != 0){
    	            	that.dataSourse.id = schoolId;
    	            	that.dataSourse.province = province;
    	            	that.dataSourse.name = name;
-   	            	that.dataSourse.academy = academy;
 					this.submitUrl = config.ajaxUrls.updateSchool;
 				}else{
 					this.submitUrl = config.ajaxUrls.createSchool;

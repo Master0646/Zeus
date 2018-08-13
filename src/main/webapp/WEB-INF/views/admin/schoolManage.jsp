@@ -29,8 +29,19 @@
 					<span style="font-size: 15px;">确定删除学校:{{schoolTitle}}？</span>
 				</p>
 			</modal>
-			<i-button type="primary" @click="createSchool"> <Icon
-				type="plus"></Icon> 新建</i-button>
+			<i-button type="primary" @click="createSchool"><Icon type="plus"></Icon> 新建</i-button>
+			<div style="display:inline-block;margin-left:60px;">
+				<label>省份：</label>
+				<i-select v-model="provinceModel" style="width:200px" @on-change="provinceCheck">
+			        <i-option v-for="provinceItem in provinceList" :value="provinceItem.value" :key="provinceItem.value" >{{ provinceItem.label }}</i-option>
+			    </i-select>
+			</div>
+			<div style="display:inline-block;margin-left:60px;">
+				<label>院校：</label>
+				<i-select v-model="schoolModel" style="width:200px" @on-change="schoolCheck">
+			        <i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
+			    </i-select>
+			</div>
 			<i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
 			<page v-model="totalPage" :current="1" :total="totalPage" @on-change="pageChange" show-total style="margin-right:60px;margin-top:20px;text-align:right;"></page>
 		</div>
@@ -46,6 +57,12 @@
                 el: '.schoolManage',
                 data: function(){
                     return{
+                    		//省份下拉框数据
+                    	provinceModel:"",
+                    	provinceList:config.provinceList,
+                    		//院校下拉框数据
+                    	schoolModel:"",
+                    	schoolList:[],
                     	aoData:{limit:10,offset:0},
                         index:"",
                         deleteModal: false,
@@ -54,12 +71,11 @@
                         columns:[
                             { title: 'ID',key: 'id', align: 'center'},
                             { title: '省份',key: 'province', align: 'center'},
-                            { title: '院校名',key: 'name', align: 'center'},
-                            { title: '系部名',key: 'academy', align: 'center'},
+                            { title: '院校或学院名称',key: 'name', align: 'center'},
                             { title: '操作',key: 'opt', align: 'center',
                         	   render: (h, params) => {
                                    return h('div', [
-                                       h('Button', {
+                                       /* h('Button', {
                                            props: {
                                                type: 'primary',
                                                size: 'small'
@@ -72,7 +88,7 @@
                                                    this.change(params.index)
                                                }
                                            }
-                                       }, '修改'),
+                                       }, '修改'), */
                                        h('Button', {
                                            props: {
                                                type: 'error',
@@ -165,11 +181,65 @@
         	                	that.$Loading.error();
                 	        }
                 	    });
+                    },
+                    //省份选择
+                    provinceCheck:function(index){
+                    	this.$Loading.start();
+                    	if(index != undefined){
+                    		this.schoolModel = "";
+	                    	var that = this;
+	                    	$.ajax({
+	                	        url:config.ajaxUrls.getSchoolByProvince,
+	                	        type:"GET",
+	                	        data:{province:index},
+	                	        success:function(res){
+	                	            if(res.success){
+    	        	                	that.$Loading.finish();
+	                	            	that.dataList = res.object;
+	                	            }else{
+	                	            	that.$Notice.error({title:res.message});
+	                	            }
+	                	        },
+	                	        error:function(){
+	                	        	that.$Notice.error({title:config.messages.loadDataError});
+	        	                	that.$Loading.error();
+	                	        }
+	                	    });
+                    	}
+                    	
+                    },
+                    //学校选择
+                    schoolCheck:function(index){
+                    	this.$Loading.start();
+                    	if(index != undefined){
+                    		this.provinceModel = "";
+                        	var that = this;
+    	                	$.ajax({
+    	            	        url:config.ajaxUrls.getAcademyBySchoolId,
+    	            	        type:"GET",
+    	            	        data:{schoolId:index},
+    	            	        success:function(res){
+    	            	            if(res.success){
+    	        	                	that.$Loading.finish();
+    	            	            	that.dataList = res.object;
+    	            	            }else{
+    	            	            	that.$Notice.error({title:res.message});
+    	            	            }
+    	            	        },
+    	            	        error:function(){
+    	            	        	that.$Notice.error({title:config.messages.loadDataError});
+    	    	                	that.$Loading.error();
+    	            	        }
+    	            	    });
+                    	}
                     }
                 },
                 created:function(){
                 	this.$Loading.start();
+            		this.provinceModel = "";
+            		this.schoolModel = "";
                 	var that = this;
+                	//初始化所有数据
                 	$.ajax({
             	        url:config.ajaxUrls.getSchoolByPage,
             	        type:"GET",
@@ -181,6 +251,25 @@
             	            	that.totalPage = res.object.count;
 								that.dataList = res.object.list;
 			                	that.$Loading.finish();
+            	            }else{
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(){
+            	        	that.$Notice.error({title:config.messages.loadDataError});
+    	                	that.$Loading.error();
+            	        }
+            	    });
+                	//初始化所有学校数据
+                	$.ajax({
+            	        url:config.ajaxUrls.getAllSchool,
+            	        type:"GET",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        success:function(res){
+            	            if(res.success){
+        	                	that.$Loading.finish();
+            	            	that.schoolList = res.object;
             	            }else{
             	            	that.$Notice.error({title:res.message});
             	            }

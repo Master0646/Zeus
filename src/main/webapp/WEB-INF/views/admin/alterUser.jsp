@@ -59,7 +59,10 @@
 		     			</i-select>
 			        </form-item>
 			        <form-item label="系部名称">
-			            <i-input v-model="dataSourse.academy" placeholder="请输入系部名"></i-input>
+			            <!-- <i-input v-model="dataSourse.academy" placeholder="请输入系部名"></i-input> -->
+			            <i-select v-model="dataSourse.academy" style="width:200px" @on-change="academyCheck">
+		     				<i-option v-for="academyItem in academyList" :value="academyItem.id" :key="academyItem.id" >{{ academyItem.name }}</i-option>
+		     			</i-select>
 			        </form-item>
 			        <form-item label="地址">
 			            <i-input v-model="dataSourse.address" placeholder="请输入地址"></i-input>
@@ -95,6 +98,7 @@
                     	schoolCode:""
                     },
                     schoolList:[],
+                    academyList:[],
                     roleList:[],
                     redirectUrl:config.viewUrls.userManage,
                     submitUrl:""
@@ -133,25 +137,51 @@
                     this.dataSourse.userRoles[0].role.id = this.roleList[index-1].id;
                 },
                 schoolCheck:function(index){
-                	console.log(this.schoolList[index-1].id,index);
+                	var that = this;
+                	console.log(this.schoolList,index);
+                	$.ajax({
+            	        url:config.ajaxUrls.getAcademyBySchoolId,
+            	        type:"GET",
+            	        data:{schoolId:index},
+            	        success:function(res){
+            	            if(res.success){
+        	                	that.$Loading.finish();
+            	            	that.academyList = res.object;
+            	            }else{
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(){
+            	        	that.$Notice.error({title:config.messages.loadDataError});
+    	                	that.$Loading.error();
+            	        }
+            	    });
+                },
+                academyCheck:function(index){
+                	console.log(this.schoolList,index);
                 }
             },
             created:function(){
             	var that = this;
 				//获取学校数据
 				$.ajax({
-          	        url:config.ajaxUrls.getSchoolByPage,
-          	        type:"get",
-          	        data:{limit:1000,offset:0},
-          	        success:function(res){
-          	            if(res.success){
-        					that.schoolList = res.object.list;
-        					console.log(res);
-          	            }else{
-          	            	that.$Notice.error({title:res.message});
-          	            }
-          	        }
-          	    });
+            	        url:config.ajaxUrls.getAllSchool,
+            	        type:"GET",
+            	        dataType:"json",
+            	        contentType :"application/json; charset=UTF-8",
+            	        success:function(res){
+            	            if(res.success){
+            	            	console.log(res);
+            	            	that.schoolList = res.object;
+            	            }else{
+            	            	that.$Notice.error({title:res.message});
+            	            }
+            	        },
+            	        error:function(){
+            	        	that.$Notice.error({title:config.messages.loadDataError});
+    	                	that.$Loading.error();
+            	        }
+            	    });
 				//判断新建、修改
 				var	userId = window.location.pathname.split("/Zeus/user/alterUser/")[1];	//获取用户id
 				if(userId != 0){

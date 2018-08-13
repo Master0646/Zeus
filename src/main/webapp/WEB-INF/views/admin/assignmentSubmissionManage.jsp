@@ -47,6 +47,7 @@
             data: function(){
             	return{
             		totalPage:100,
+            		aoData:{curriculumId:0,limit:10,offset:0},
             		itemList:[
             			{ message: 'Foo' },{ message: 'Bar' },{ message: 'Foo' },{ message: 'Bar' },
             			{ message: 'Foo' },{ message: 'Bar' },{ message: 'Foo' },{ message: 'Bar' },
@@ -59,6 +60,30 @@
             	pageChange:function(index){
             		console.log(index);
             	}
+            },
+            created:function(){
+            	var that = this;
+            	this.aoData.curriculumId = window.location.search.split("curriculumId=")[1];	//获取课程id
+            	$.ajax({
+			        url:config.ajaxUrls.getAssignmentListByPageAndCurriculumId,
+			        type:"GET",
+			        data:this.aoData,
+			        dataType:"json",
+			        contentType :"application/json; charset=UTF-8",
+			        success:function(res){
+			            if(res.success){
+			            	console.log(res);
+	                    	that.$Loading.finish();
+							that.dataList = res.object.list;
+			            }else{
+			            	that.$Notice.error({title:res.message});
+			            }
+			        },
+			        error:function(){
+	                	that.$Loading.error();
+			        	that.$Notice.error({title:config.messages.loadDataError});
+			        }
+			    });
             }
         })
       </script>

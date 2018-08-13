@@ -37,6 +37,7 @@ public class CurriculumServiceImpl implements CurriculumService {
 	@Override
 	public int updateCurriculum(Curriculum curriculum) {
 		try{
+			curriculum.setValid(true);
 			curriculumDaoImpl.updateCurriculum(curriculum);
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}

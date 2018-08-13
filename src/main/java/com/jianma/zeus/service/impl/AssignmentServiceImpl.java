@@ -25,6 +25,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 	@Override
 	public int createAssignment(Assignment assignment) {
 		try{
+			assignment.setValid(true);
 			assignmentDaoImpl.createAssignment(assignment);
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}
@@ -36,6 +37,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 	@Override
 	public int updateAssignment(Assignment assignment) {
 		try{
+			assignment.setValid(true);
 			assignmentDaoImpl.updateAssignment(assignment);
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}

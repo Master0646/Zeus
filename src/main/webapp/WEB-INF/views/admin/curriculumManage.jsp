@@ -51,7 +51,7 @@
                     aoData:{limit:10, offset:0},
                     columns:[
                         { title: 'ID',key: 'id', align: 'center'},
-                        { title: '老师',key: 'teacherId', align: 'center'},
+                        { title: '老师(暂时定死为1)',key: 'teacherId', align: 'center'},
                         { title: '课程名',key: 'name', align: 'center'},
                         { title: '作业详情',key: 'opt', align: 'center',
                         	render: (h, params) => {
@@ -151,7 +151,6 @@
                 			        contentType :"application/json; charset=UTF-8",	
                 			        success:function(res){
                 			            if(res.success){
-                			            	console.log("success");
                 	                    	that.$Loading.finish();
                 							that.dataList = res.object.list;
                 			            }else{
@@ -171,14 +170,15 @@
                 createCurriculum:function(){
                     window.location.href="curriculum/alterCurriculum/0";
                 },
+                //作业详情
                 assignmentManage:function(index){
-                	window.location.href="assignment/assignmentManage";
+                	window.location.href="assignment/assignmentManage?curriculumId="+this.dataList[index].id;
                 },
+                //作业提交情况
                 chickSubmission:function(index){
-                	window.location.href="assignment/assignmentSubmissionManage";
+                	window.location.href="assignment/assignmentSubmissionManage?curriculumId="+this.dataList[index].id;
                 },
-                change:function(index){
-                    console.log("changechange:",index);
+                change:function(index){;
                     window.location.href="curriculum/alterCurriculum/"+this.dataList[index].id;
                 },
                 remove:function(index) {

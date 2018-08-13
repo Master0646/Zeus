@@ -67,6 +67,7 @@ var config = {
 		deleteAssignment:"assignment/deleteAssignment/:id",
 		updateAssignment:"assignment/updateAssignment",
 		getAssignmentListByPage:"assignment/getAssignmentListByPage",
+		getAssignmentListByPageAndCurriculumId:"assignment/getAssignmentListByPageAndCurriculumId",
 		// 用户
 		createUser:"user/createUser",
 		createManageUser:"user/createManageUser",
