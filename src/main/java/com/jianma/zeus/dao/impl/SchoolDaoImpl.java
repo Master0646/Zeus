@@ -1,6 +1,8 @@
 package com.jianma.zeus.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -95,6 +97,33 @@ public class SchoolDaoImpl implements SchoolDao {
 		String hql = " from School s where parentId = 0 order by createAt desc ";
 		Query query = session.createQuery(hql);
 		return query.list();
+	}
+
+	@Override
+	public void deleteSchoolByParentId(int parentId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " delete from School s  where s.parentId = ?";
+		Query query = session.createQuery(hql);
+		query.setParameter(0, parentId);
+		query.executeUpdate();
+	}
+
+	@Override
+	public Map<Integer, String> getMapOfAllSchool() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = " select id,name from School s order by createAt desc ";
+		Query query = session.createQuery(hql);
+		List list = query.list();
+		Map<Integer,String> schoolMap = new HashMap<>();
+		for(int i = 0; i < list.size(); i++)
+        {
+			Object []o = (Object[])list.get(i);
+            
+            int id = ((Number)o[0]).intValue();
+			String name = (String)o[1];
+			schoolMap.put(id, name);
+        }
+		return schoolMap;
 	}
 
 }

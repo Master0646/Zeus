@@ -31,12 +31,12 @@
 	         <div>
 			    <i-form :model="dataSourse" :label-width="180" style="width:80%;">
 	                 <form-item label="角色">
-	                     <i-select v-model="dataSourse.roleId" style="width:200px" @on-change="selectChange">
-	                         <i-option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</i-option>
+	                     <i-select v-model="dataSourse.roleId"> 
+	                         <i-option v-for="item in roleList" :value="item.value" :key="item.value" long>{{ item.label }}</i-option>
 	                     </i-select>
 			        </form-item>
 	                 <form-item label="菜单选择">              
-	                     <i-select v-model="roleArr" multiple style="width:200px" @on-change="checkboxChange">
+	                     <i-select v-model="roleArr" multiple @on-change="checkboxChange">
 	                         <i-option v-for="item in menuList" :value="item.id" :key="item.id">{{ item.name }}</i-option>
 	                     </i-select>
 			        </form-item>
@@ -65,9 +65,6 @@
             	 }
              },
              methods:{
-                 selectChange:function(value){
-                     console.log("value",value);
-                 },
                  checkboxChange:function(array){
                      this.dataSourse.menuIds = array.toString();
                  },
@@ -105,10 +102,8 @@
             	 this.$Loading.start();
  				 var roleMenuId = window.location.pathname.split("/Zeus/roleMenu/alterRoleMenu/")[1];	//获取菜单id
  				 if(roleMenuId != 0){
+     	            that.dataSourse.id = roleMenuId;
  	            	this.$Loading.finish();
-    	            	that.dataSourse.id = roleMenuId;
-    	            	/* that.dataSourse.name = name;
-    	            	that.dataSourse.url = url; */
  					this.submitUrl = config.ajaxUrls.updateRoleMenu;
  				 }else{
  	            	this.$Loading.finish();

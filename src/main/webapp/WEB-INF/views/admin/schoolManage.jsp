@@ -75,20 +75,6 @@
                             { title: '操作',key: 'opt', align: 'center',
                         	   render: (h, params) => {
                                    return h('div', [
-                                       /* h('Button', {
-                                           props: {
-                                               type: 'primary',
-                                               size: 'small'
-                                           },
-                                           style: {
-                                               marginRight: '5px'
-                                           },
-                                           on: {
-                                               click: () => {
-                                                   this.change(params.index)
-                                               }
-                                           }
-                                       }, '修改'), */
                                        h('Button', {
                                            props: {
                                                type: 'error',
@@ -149,7 +135,6 @@
                         window.location.href="school/alterSchool/0";
                     },
                     change:function(index){
-                    	var that = this;
                     	window.location.href="school/alterSchool/"+this.dataList[index].id;
                     },
                     remove:function(index) {

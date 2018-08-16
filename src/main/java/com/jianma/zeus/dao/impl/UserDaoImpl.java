@@ -216,7 +216,7 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<User> findUserListByPage(int offset, int limit) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql  = "select email,realname,mobile,address,valid, id from User where valid = 1 order by createtime desc";
+		String hql  = "select email,realname,mobile,address,valid,id,school,academy from User where valid = 1 order by createtime desc";
 		Query query = session.createQuery(hql);
 		query.setFirstResult(offset);
 		query.setMaxResults(limit);
@@ -234,6 +234,8 @@ public class UserDaoImpl implements UserDao {
             String address = (String)o[3];
             int valid = ((Number)o[4]).intValue();
             int id = ((Number)o[5]).intValue();
+            short school = ((Number)o[6]).shortValue();
+            short academy = ((Number)o[7]).shortValue();
             
             user.setEmail(email);
             user.setRealname(realname);
@@ -241,6 +243,8 @@ public class UserDaoImpl implements UserDao {
             user.setAddress(address);
             user.setValid((byte)valid);
             user.setId(id);
+            user.setSchool(school);
+            user.setAcademy(academy);
             
             userList.add(user);
         }

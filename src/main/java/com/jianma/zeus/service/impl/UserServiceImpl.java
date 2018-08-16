@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.jianma.zeus.dao.SchoolDao;
 import com.jianma.zeus.dao.UserDao;
 import com.jianma.zeus.model.Role;
 import com.jianma.zeus.model.User;
@@ -34,6 +36,10 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	@Qualifier(value = "userDaoImpl")
 	private UserDao userDaoImpl;
+	
+	@Autowired
+	@Qualifier(value = "schoolDaoImpl")
+	private SchoolDao schoolDaoImpl;
 	
 	@Override
 	public int createUser(User user) {
@@ -177,7 +183,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public PageModel getUserByPage(int offset, int limit) {
+		Map<Integer,String> schoolMap = schoolDaoImpl.getMapOfAllSchool();
 		List<User> list = userDaoImpl.findUserListByPage(offset, limit);
+		list.stream().forEach((user)->{
+			user.setAcademyName(schoolMap.get(((Short)user.getAcademy()).intValue()));
+			user.setSchoolName(schoolMap.get(((Short)user.getSchool()).intValue()));
+		});
 		int count = userDaoImpl.getCountUser();
 		PageModel userPageModel = new PageModel();
 		userPageModel.setCount(count);

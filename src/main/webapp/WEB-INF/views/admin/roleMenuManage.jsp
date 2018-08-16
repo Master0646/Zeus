@@ -119,7 +119,6 @@
                   window.location.href="roleMenu/alterRoleMenu/0";
               },
               remove:function(index) {
-                  console.log("removeremove:",index);
                   this.roleMenuTitle = this.dataList[index].name;
                   this.deleteModal = true;
                   this.index = index;
@@ -136,7 +135,6 @@
 			        contentType :"application/json; charset=UTF-8",	
 			        success:function(res){
 			            if(res.success){
-			            	console.log(res);
 	                    	that.$Loading.finish();
 							that.dataList = res.object;
 			            }else{

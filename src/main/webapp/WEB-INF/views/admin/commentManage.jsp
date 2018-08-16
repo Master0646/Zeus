@@ -21,10 +21,10 @@
 	    <div class="commentManage" style="margin:20px 20px;" v-cloak>
 	        <breadcrumb>
 	        	<breadcrumb-item to="curriculum/curriculumManage">课程管理</breadcrumb-item>
-	        	<breadcrumb-item to="assignment/assignmentManage">作业管理</breadcrumb-item>
 		        <breadcrumb-item>作业评论管理</breadcrumb-item>
 		    </breadcrumb><br />
 		    <i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
+		    <page v-model="totalPage" :current="1" :total="totalPage" @on-change="pageChange" show-total style="margin-right:60px;margin-top:20px;text-align:right;"></page>
 	    </div>
     </div>
     <script src="resources/js/lib/jquery-1.10.2.min.js"></script>
@@ -38,9 +38,11 @@
             el: '.commentManage',
             data: function(){
             	return{
+            		totalPage:"",
+            		aoData:{assignmentId:"",limit:10,offset:0},
             		columns:[
-                         { title: 'ID',key: 'id', align: 'center'},
-                         { title: '评论内容',key: 'name', align: 'center'},
+                         { title: 'ID',key: 'userId', align: 'center'},
+                         { title: '评论内容',key: 'content', align: 'center'},
                          { title: '操作',key: 'opt', align: 'center',
                          	render: (h, params) => {
                                  return h('div', [
@@ -62,17 +64,56 @@
                              }
                          }
                      ],
-                     dataList:[
-                         {id:"1",name:"评论1",curriculumId:"1"},
-                         {id:"2",name:"评论2",curriculumId:"1"},
-                         {id:"3",name:"评论3",curriculumId:"2"}
-                     ]
+                     dataList:[]
             	}
             },
             methods: {
             	pageChange:function(index){
-            		console.log(index);
+                	this.aoData.offset = (index-1)*10;
+                	var that = this;
+                	$.ajax({
+              	        url:config.ajaxUrls.getCommnetListByPageAndAssignmentId,
+              	        type:"get",
+              	        dataType:"json",
+              	        data:this.aoData,
+              	        contentType :"application/json; charset=UTF-8",
+              	        success:function(res){
+              	            if(res.success){
+              	            	that.dataList = res.object.list;
+              	            	that.totalPage = res.object.count;
+              	            }else{
+              	            	that.$Notice.error({title:res.message});
+              	            }
+              	        },
+              	        error:function(err){
+                          	that.$Loading.error();
+              	        	that.$Notice.error({title:config.messages.loadDataError});
+              	        }
+              	    });
             	}
+            },
+            created:function(){
+            	var that = this;
+            	this.aoData.assignmentId = window.location.pathname.split("/Zeus/comment/commentManage/")[1];	//获取作业id
+            	$.ajax({
+          	        url:config.ajaxUrls.getCommnetListByPageAndAssignmentId,
+          	        type:"get",
+          	        dataType:"json",
+          	        data:this.aoData,
+          	        contentType :"application/json; charset=UTF-8",
+          	        success:function(res){
+          	            if(res.success){
+          	            	that.dataList = res.object.list;
+          	            	that.totalPage = res.object.count;
+          	            }else{
+          	            	that.$Notice.error({title:res.message});
+          	            }
+          	        },
+          	        error:function(err){
+                      	that.$Loading.error();
+          	        	that.$Notice.error({title:config.messages.loadDataError});
+          	        }
+          	    });
             }
         })
       </script>

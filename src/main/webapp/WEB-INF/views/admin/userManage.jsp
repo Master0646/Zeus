@@ -53,8 +53,8 @@
                     columns:[
                         { title: 'ID',key: 'id', align: 'center'},
                         { title: '姓名',key: 'realname', align: 'center'},
-                        { title: '学校',key: 'school', align: 'center'},
-                        { title: '院系',key: 'academy', align: 'center'},
+                        { title: '学校',key: 'schoolName', align: 'center'},
+                        { title: '院系',key: 'academyName', align: 'center'},
                         { title: '邮箱',key: 'email', align: 'center'},
                         { title: '有效',key: 'valid', align: 'center'},
                         { title: '操作',key: 'opt', align: 'center',
@@ -115,7 +115,6 @@
                 			        contentType :"application/json; charset=UTF-8",	
                 			        success:function(res){
                 			            if(res.success){
-                			            	console.log(res);
                 	                    	that.$Loading.finish();
                 							that.dataList = res.object;
                 			            }else{
@@ -153,7 +152,6 @@
 			        contentType :"application/json; charset=UTF-8",
 			        success:function(res){
 			            if(res.success){
-			            	console.log(res);
 	                    	that.$Loading.finish();
 							that.dataList = res.object;
 			            }else{

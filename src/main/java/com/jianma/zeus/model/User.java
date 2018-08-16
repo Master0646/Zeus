@@ -41,6 +41,8 @@ public class User implements java.io.Serializable {
 	private Set<UserRole> userRoles = new HashSet<UserRole>(0);
 
 	private String schoolCode;
+	private String schoolName;
+	private String academyName;
 	
 	public User() {
 	}
@@ -212,6 +214,24 @@ public class User implements java.io.Serializable {
 
 	public void setSchoolCode(String schoolCode) {
 		this.schoolCode = schoolCode;
+	}
+
+	@Transient
+	public String getSchoolName() {
+		return schoolName;
+	}
+
+	public void setSchoolName(String schoolName) {
+		this.schoolName = schoolName;
+	}
+
+	@Transient
+	public String getAcademyName() {
+		return academyName;
+	}
+
+	public void setAcademyName(String academyName) {
+		this.academyName = academyName;
 	}
 	
 	

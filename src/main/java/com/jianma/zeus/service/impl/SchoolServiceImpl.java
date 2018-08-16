@@ -52,6 +52,7 @@ public class SchoolServiceImpl implements SchoolService {
 	public int deleteSchool(Long schoolId) {
 		try{
 			schoolDaoImpl.deleteSchool(schoolId);
+			schoolDaoImpl.deleteSchoolByParentId(schoolId.intValue());
 			return ResponseCodeUtil.DB_OPERATION_SUCCESS;
 		}
 		catch(Exception e){

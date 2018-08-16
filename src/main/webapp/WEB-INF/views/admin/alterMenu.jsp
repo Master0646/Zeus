@@ -28,12 +28,12 @@
 		        <breadcrumb-item>新建/修改菜单</breadcrumb-item>
 		    </breadcrumb><br />
 	        <div>
-			   <i-form :model="dataSourse" :label-width="180" style="width:80%;">
-	                <form-item label="菜单名称">
-			           <i-input v-model="dataSourse.name" clearable="true" placeholder="请输入课程名"></i-input>
+			   <i-form :model="dataSourse" :rules="ruleDataSourse" :label-width="180" style="width:80%;">
+	                <form-item label="菜单名称" prop="name">
+			           <i-input v-model="dataSourse.name" clearable="true" placeholder="请输入菜单名"></i-input>
 			       </form-item>
-	                <form-item label="链接">
-			           <i-input type="url" v-model="dataSourse.url" clearable="true" placeholder="请输入菜单对应链接"></i-input>
+	                <form-item label="链接" prop="url">
+			           <i-input v-model="dataSourse.url" clearable="true" placeholder="请输入菜单对应链接"></i-input>
 			        </form-item>
 			        <form-item>
 			        	<i-button type="primary" v-on:click="submit" long>确定</i-button>
@@ -53,6 +53,10 @@
             el:".alterMenu",
             data:function(){
                 return{
+                	ruleDataSourse:{
+                		name:[{ required: true,type:"string",  min:2, message: '请输入至少2个字符', trigger: 'blur' }],
+                		url:[{ required: true,type:"url",message: '请输入正确url格式', trigger: 'blur' }]
+                	},
                     //需要提交的数据
                     dataSourse:{
                     	id:"",

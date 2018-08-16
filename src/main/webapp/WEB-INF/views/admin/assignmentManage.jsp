@@ -29,6 +29,7 @@
 		        <breadcrumb-item>作业管理</breadcrumb-item>
 		    </breadcrumb><br />
 	        <i-table :columns="columns" :data="dataList" style="margin-top:20px;"></i-table>
+	        <page v-model="totalPage" :current="1" :total="totalPage" @on-change="pageChange" show-total style="margin-right:60px;margin-top:20px;text-align:right;"></page>
 	    </div>
     </div>
     <script>
@@ -37,6 +38,7 @@
             el: '.assignmentManage',
             data: function(){
             	return{
+            		totalPage:"",
                     aoData:{curriculumId:0,limit:10,offset:0},
                     curriculumInfo:{curriculumId:"",curriculumName:""},
                     columns:[
@@ -102,11 +104,34 @@
             },
             methods: {
                 chickComment:function(index){
-                    console.log("chickComment:",index);
                     window.location.href="comment/commentManage/" + this.dataList[index].id;
                 },
                 grade:function(index){
                     console.log(" score:",index);
+                },
+                pageChange:function(index){
+                	this.aoData.offset = (index-1)*10;
+                	var that = this;
+                	$.ajax({
+    			        url:config.ajaxUrls.getAssignmentListByPageAndCurriculumId,
+    			        type:"GET",
+    			        data:this.aoData,
+    			        dataType:"json",
+    			        contentType :"application/json; charset=UTF-8",
+    			        success:function(res){
+    			            if(res.success){
+    	                    	that.$Loading.finish();
+    							that.dataList = res.object.list;
+    							that.totalPage = res.object.count;
+    			            }else{
+    			            	that.$Notice.error({title:res.message});
+    			            }
+    			        },
+    			        error:function(){
+    	                	that.$Loading.error();
+    			        	that.$Notice.error({title:config.messages.loadDataError});
+    			        }
+    			    });
                 }
             },
             created:function(){
@@ -124,6 +149,7 @@
 			            if(res.success){
 	                    	that.$Loading.finish();
 							that.dataList = res.object.list;
+							that.totalPage = res.object.count;
 			            }else{
 			            	that.$Notice.error({title:res.message});
 			            }

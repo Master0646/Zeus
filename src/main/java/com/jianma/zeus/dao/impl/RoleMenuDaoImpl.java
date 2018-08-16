@@ -43,7 +43,7 @@ public class RoleMenuDaoImpl implements RoleMenuDao {
 	public List<Menu> getMenuListByRoleId(List<Integer> roleIds) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = " select m.name,m.url,rm.id,r.rolename,rm.roleId,rm.menuId from Role r,RoleMenu rm, Menu m "
-				+ " where m.id = rm.menuId and rm.roleId = r.id and rm.roleId in (:roleId)";
+				+ " where m.id = rm.menuId and rm.roleId = r.id and rm.roleId in (:roleId) order by rm.id asc ";
 		Query query = session.createQuery(hql);
 		query.setParameterList("roleId", roleIds);
 		List list = query.list();

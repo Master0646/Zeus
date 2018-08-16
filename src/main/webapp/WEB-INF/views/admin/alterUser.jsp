@@ -32,40 +32,36 @@
 		        <breadcrumb-item>新建/修改用户</breadcrumb-item>
 		    </breadcrumb><br />
 	     	<div>
-				<i-form :model="dataSourse" :label-width="180" style="width:80%;">
+				<i-form :model="dataSourse" :label-width="180" style="width:80%;" :rules="ruleDataSourse">
 		            <form-item label="角色">
-		                <i-select v-model="dataSourse.userRoles[0].role.id" style="width:200px" @on-change="groupCheck">
+		                <i-select v-model="dataSourse.userRoles[0].role.id" @on-change="groupCheck">
 		     				<i-option v-for="roleItem in roleList" :value="roleItem.id" :key="roleItem.id" >{{ roleItem.rolename }}</i-option>
 		     			</i-select>
 			        </form-item>
-			        <form-item label="账号">
-			            <i-input v-model="dataSourse.email" placeholder="请输入账号"></i-input>
+			        <form-item label="账号" prop="email">
+			            <i-input v-model="dataSourse.email" clearable="true" placeholder="请输入账号"></i-input>
 			        </form-item>
-			        <form-item label="密码">
-			            <i-input v-model="dataSourse.password" placeholder="请输入密码"></i-input>
+			        <form-item label="密码" prop="password">
+			            <i-input v-model="dataSourse.password" clearable="true" placeholder="请输入密码"></i-input>
 			        </form-item>
-			    	<form-item label="真实姓名">
-			        	<i-input v-model="dataSourse.realname" placeholder="请输入姓名"></i-input>
+			    	<form-item label="真实姓名" prop="realname">
+			        	<i-input v-model="dataSourse.realname" clearable="true" placeholder="请输入姓名"></i-input>
 			    	</form-item>
 			    	<form-item label="绰号">
-			        	<i-input v-model="dataSourse.nickname" placeholder="请输入绰号"></i-input>
+			        	<i-input v-model="dataSourse.nickname" clearable="true" placeholder="请输入绰号"></i-input>
 			    	</form-item>
-			    	<form-item label="手机号">
+			    	<form-item label="手机号" prop="mobile">
 			        	<i-input v-model="dataSourse.mobile" placeholder="请输入手机号"></i-input>
 			    	</form-item>
 			        <form-item label="学校名称">
-			            <i-select v-model="dataSourse.school" style="width:200px" @on-change="schoolCheck">
+			            <i-select v-model="dataSourse.school" @on-change="schoolCheck">
 		     				<i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
 		     			</i-select>
 			        </form-item>
 			        <form-item label="系部名称">
-			            <!-- <i-input v-model="dataSourse.academy" placeholder="请输入系部名"></i-input> -->
-			            <i-select v-model="dataSourse.academy" style="width:200px" @on-change="academyCheck">
+			            <i-select v-model="dataSourse.academy">
 		     				<i-option v-for="academyItem in academyList" :value="academyItem.id" :key="academyItem.id" >{{ academyItem.name }}</i-option>
 		     			</i-select>
-			        </form-item>
-			        <form-item label="地址">
-			            <i-input v-model="dataSourse.address" placeholder="请输入地址"></i-input>
 			        </form-item>
 			        <form-item>
 			        	<i-button type="primary" v-on:click="submit" long>确定</i-button>
@@ -80,8 +76,13 @@
             el:".alterUser",
             data:function(){
                 return{
-                    //需要提交的数据
-                    dataSourse:{
+                	ruleDataSourse:{	//表单验证
+                		email:[{ required: true,type:'email',  message: '请输入正确邮箱格式', trigger: 'blur' }],
+                		password:[{required: true,type:'string', min:6, message: '请输入至少6位数密码', trigger: 'blur'}],
+                		realname:[{required: true,type:'string', min:2, message: '请输入至少2个字符', trigger: 'blur'}],
+                		mobile:[{ required: true, type:'string', len: 11, message:'请输入正确手机号码', trigger:'blur'}]
+                	},
+                    dataSourse:{		//需要提交的数据
                     	id:"",
                     	email:"",		//账号
                     	password:"",	//密码
@@ -90,7 +91,6 @@
                     	mobile:"",
                         school:"",
                     	academy:"",
-                    	address:"",
                     	/* headPortrait:"", */
                     	userRoles:[
               	           {role:{id:""}}
@@ -138,7 +138,6 @@
                 },
                 schoolCheck:function(index){
                 	var that = this;
-                	console.log(this.schoolList,index);
                 	$.ajax({
             	        url:config.ajaxUrls.getAcademyBySchoolId,
             	        type:"GET",
@@ -156,9 +155,6 @@
     	                	that.$Loading.error();
             	        }
             	    });
-                },
-                academyCheck:function(index){
-                	console.log(this.schoolList,index);
                 }
             },
             created:function(){
@@ -171,7 +167,6 @@
             	        contentType :"application/json; charset=UTF-8",
             	        success:function(res){
             	            if(res.success){
-            	            	console.log(res);
             	            	that.schoolList = res.object;
             	            }else{
             	            	that.$Notice.error({title:res.message});
@@ -210,7 +205,6 @@
 	        	        					that.dataSourse.mobile = mobile;
 	        	        					that.dataSourse.school = school;
 	        	        					that.dataSourse.academy = academy;
-	        	        					that.dataSourse.address = address;
 	        	          	            }else{
 	        	          	            	that.$Notice.error({title:res.message});
 	        	          	            }
@@ -240,7 +234,6 @@
 	          	            if(res.success){
 	          	            	//角色数据筛选
 	          	            	that.roleList = res.object;
-	          	            	console.log(that.roleList);
 	          	            }else{
 	          	            	that.$Notice.error({title:res.message});
 	          	            }

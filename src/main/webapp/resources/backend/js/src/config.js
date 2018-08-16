@@ -77,7 +77,9 @@ var config = {
 		getUserByPage:"user/getUserByPage",
 		//角色			
 		getAllRoles:"role/getAllRoles",
-		findRolesByUserId:"user/findRolesByUserId"
+		findRolesByUserId:"user/findRolesByUserId",
+		//评论
+		getCommnetListByPageAndAssignmentId:"comment/getCommnetListByPageAndAssignmentId"
 	},
 	viewUrls : {
 		newsMgr : "news/newsMgr",

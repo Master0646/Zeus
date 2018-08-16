@@ -37,12 +37,12 @@
 			<div>
 				<i-form :model="dataSourse" :label-width="180" style="width:80%;"> 
 					<form-item label="省份"> 
-						<i-select v-model="dataSourse.province" style="width:200px" @on-change="provinceCheck" @on-open-change="openProvince">
+						<i-select v-model="dataSourse.province" @on-change="provinceCheck" @on-open-change="openProvince">
 		     				<i-option v-for="provinceItem in provinceList" :value="provinceItem.value" :key="provinceItem.value" >{{ provinceItem.label }}</i-option>
 		     			</i-select>
 					</form-item> 
 					<form-item label="选择该学校"> 
-						<i-select v-model="dataSourse.parentId" style="width:200px" @on-change="schoolCheck">
+						<i-select v-model="dataSourse.parentId" @on-change="schoolCheck">
 		     				<i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
 		     			</i-select>
 					</form-item> 
@@ -62,7 +62,7 @@
 			    <div>
 					<i-form :model="dataSourse" :label-width="180" style="width:80%;"> 
 						<form-item label="选择该学校"> 
-							<i-select v-model="dataSourse.parentId" style="width:200px" @on-change="schoolCheck">
+							<i-select v-model="dataSourse.parentId" @on-change="schoolCheck">
 			     				<i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
 			     			</i-select>
 							<span v-if="showText" style="color:red;">请重新选择学校</span>
