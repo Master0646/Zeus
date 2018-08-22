@@ -58,7 +58,7 @@
 		     				<i-option v-for="schoolItem in schoolList" :value="schoolItem.id" :key="schoolItem.id" >{{ schoolItem.name }}</i-option>
 		     			</i-select>
 			        </form-item>
-			        <form-item label="系部名称">
+			        <form-item label="学院名称">
 			            <i-select v-model="dataSourse.academy">
 		     				<i-option v-for="academyItem in academyList" :value="academyItem.id" :key="academyItem.id" >{{ academyItem.name }}</i-option>
 		     			</i-select>
